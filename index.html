@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bharat Gupta — Product Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #16161f;
+    --border: rgba(255,255,255,0.07);
+    --accent: #c8a96e;
+    --accent2: #7c6ef5;
+    --text: #e8e6e1;
+    --muted: #6b6880;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.4rem 4rem;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 8rem 4rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 80% 50%, rgba(124,110,245,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(200,169,110,0.06) 0%, transparent 60%);
+  }
+  .hero-grid-overlay {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+  }
+  .hero-left { position: relative; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--accent);
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 5.5vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1.0;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+  }
+  h1 span { color: var(--accent); }
+  .hero-subtitle {
+    font-size: 1.1rem;
+    color: var(--muted);
+    margin: 1.5rem 0 2.5rem;
+    line-height: 1.7;
+    max-width: 440px;
+  }
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    padding: 0.85rem 2rem;
+    background: var(--accent);
+    color: #0a0a0f;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none; cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .btn-primary:hover { background: #dfc08a; transform: translateY(-2px); }
+  .btn-outline {
+    padding: 0.85rem 2rem;
+    background: transparent;
+    color: var(--text);
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+  .hero-right {
+    display: flex; justify-content: flex-end; align-items: center;
+    position: relative;
+  }
+  .hero-stats {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .stat-card {
+    padding: 1.8rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.8s ease both;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+  .stat-card:nth-child(2) { animation-delay: 0.1s; }
+  .stat-card:nth-child(3) { animation-delay: 0.2s; }
+  .stat-card:nth-child(4) { animation-delay: 0.3s; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .stat-num span { color: var(--accent); font-size: 1.4rem; }
+  .stat-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .motto {
+    position: absolute; bottom: 3rem; left: 4rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .motto em { color: var(--accent); font-style: normal; }
+
+  /* ── SECTION BASE ── */
+  section { padding: 7rem 4rem; }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1; max-width: 40px; height: 1px;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 3rem;
+  }
+
+  /* ── ABOUT ── */
+  #about { background: var(--surface); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+  .about-text p {
+    color: var(--muted);
+    line-height: 1.9;
+    margin-bottom: 1.2rem;
+    font-size: 0.97rem;
+  }
+  .about-text p strong { color: var(--text); font-weight: 500; }
+  .about-right {}
+  .skills-group { margin-bottom: 2rem; }
+  .skills-group-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+  }
+  .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tag {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.75rem;
+    font-family: 'DM Mono', monospace;
+    border: 1px solid var(--border);
+    color: var(--text);
+    letter-spacing: 0.05em;
+    transition: all 0.25s;
+  }
+  .tag:hover { border-color: var(--accent); color: var(--accent); }
+  .achievements {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--bg);
+    border-left: 2px solid var(--accent);
+  }
+  .achievement-item {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    margin-bottom: 0.8rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .achievement-item:last-child { margin-bottom: 0; }
+  .achievement-item::before {
+    content: '◆';
+    color: var(--accent);
+    font-size: 0.5rem;
+    margin-top: 0.35rem;
+    flex-shrink: 0;
+  }
+
+  /* ── EXPERIENCE ── */
+  #experience { background: var(--bg); }
+  .exp-timeline { position: relative; }
+  .exp-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+  .exp-item {
+    padding-left: 2.5rem;
+    margin-bottom: 4rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+  .exp-item.visible { opacity: 1; transform: translateY(0); }
+  .exp-item::before {
+    content: '';
+    position: absolute;
+    left: -4px; top: 6px;
+    width: 9px; height: 9px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(200,169,110,0.5);
+  }
+  .exp-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 0.6rem;
+    flex-wrap: wrap; gap: 0.5rem;
+  }
+  .exp-company {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--white);
+  }
+  .exp-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid rgba(200,169,110,0.3);
+  }
+  .exp-role {
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .exp-bullets { list-style: none; }
+  .exp-bullets li {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.75;
+    padding-left: 1.2rem;
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+  .exp-bullets li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--accent2);
+    font-size: 0.8rem;
+  }
+  .exp-bullets li strong { color: var(--text); font-weight: 500; }
+  .exp-type-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    background: rgba(124,110,245,0.12);
+    color: var(--accent2);
+    border: 1px solid rgba(124,110,245,0.25);
+    margin-bottom: 0.5rem;
+  }
+
+  /* ── EDUCATION ── */
+  #education { background: var(--surface); }
+  .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .edu-card {
+    padding: 2.5rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .edu-card:hover { border-color: rgba(200,169,110,0.35); }
+  .edu-card::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .edu-card:hover::after { transform: scaleX(1); }
+  .edu-school {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--white);
+    margin-bottom: 0.25rem;
+  }
+  .edu-degree {
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .edu-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+  }
+  .edu-gpa {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  .edu-gpa span { font-size: 0.8rem; color: var(--muted); font-family: 'DM Sans', sans-serif; }
+  .edu-courses {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ── PRODUCT EXPERIENCE ── */
+  #product { background: var(--bg); }
+  .product-intro {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 700px;
+    margin-bottom: 3rem;
+  }
+  .product-categories { display: flex; flex-direction: column; gap: 3rem; }
+  .product-category-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+  .product-card {
+    padding: 1.25rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: 0.82rem;
+    color: var(--text);
+    transition: all 0.25s;
+    cursor: default;
+  }
+  .product-card:hover { border-color: rgba(200,169,110,0.4); background: var(--surface2); }
+  .product-card .company { font-size: 0.68rem; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.3rem; }
+
+  /* ── STRENGTHS ── */
+  #strengths { background: var(--surface); }
+  .strengths-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.2rem; }
+  .strength-card {
+    padding: 2rem 1.5rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .strength-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .strength-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--border);
+    line-height: 1;
+    margin-bottom: 0.75rem;
+  }
+  .strength-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 0.6rem;
+  }
+  .strength-desc {
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .strength-tags { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.75rem; }
+  .strength-tag {
+    font-size: 0.65rem;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    padding: 0.2rem 0.4rem;
+    border: 1px solid rgba(200,169,110,0.2);
+    text-align: center;
+  }
+
+  /* ── CONTACT ── */
+  #contact { background: var(--bg); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+  .contact-intro { font-size: 0.95rem; color: var(--muted); line-height: 1.8; margin-bottom: 2rem; }
+  .contact-links { display: flex; flex-direction: column; gap: 1rem; }
+  .contact-link {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.85rem;
+    transition: all 0.3s;
+  }
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+  .contact-link-icon {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .contact-right {
+    padding: 2.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .contact-right h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+  }
+  .info-row { margin-bottom: 1.2rem; }
+  .info-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.25rem; }
+  .info-value { font-size: 0.88rem; color: var(--text); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 2rem 4rem;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  footer span { font-family: 'DM Mono', monospace; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-left { animation: fadeUp 0.9s ease both; }
+  .hero-right { animation: fadeUp 0.9s ease 0.2s both; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; }
+    .hero-right { margin-top: 3rem; justify-content: flex-start; }
+    .hero-stats { grid-template-columns: 1fr 1fr; width: 100%; }
+    section { padding: 5rem 1.5rem; }
+    .about-grid, .edu-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .strengths-grid { grid-template-columns: 1fr 1fr; }
+    .motto { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">BG</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#product">Product Work</a></li>
+    <li><a href="#strengths">Strengths</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-overlay"></div>
+  <div class="hero-left">
+    <div class="hero-tag">Product Manager · Chicago, IL</div>
+    <h1>Bharat<br><span>Gupta</span></h1>
+    <p class="hero-subtitle">
+      Engineering-rooted PM bridging technical depth with customer empathy. 
+      Currently building KYC & identity products at <strong style="color:var(--text)">LexisNexis Risk Solutions</strong> — 
+      previously eBay, Duke, Rebel Foods.
+    </p>
+    <div class="hero-ctas">
+      <a href="#experience" class="btn-primary">View Experience</a>
+      <a href="#contact" class="btn-outline">Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-stats">
+      <div class="stat-card">
+        <div class="stat-num">$700<span>M</span></div>
+        <div class="stat-label">Product Revenue Owned</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">3.93<span>/4</span></div>
+        <div class="stat-label">Duke University GPA</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">60<span>%</span></div>
+        <div class="stat-label">Manual Effort Reduced</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">4<span>+</span></div>
+        <div class="stat-label">Years PM + Eng Experience</div>
+      </div>
+    </div>
+  </div>
+  <div class="motto">"If your only tool is a hammer, <em>every problem looks like a nail.</em>"</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">01 — Profile</div>
+  <h2>A Little<br>About Me</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>
+        I'm a <strong>Product Manager with an engineering foundation</strong> — holding a Master of Engineering Management from Duke University and a B.Tech in Computer Science from VIT University, India.
+      </p>
+      <p>
+        My career spans both sides of the product equation: writing production code at Rebel Foods and Motherson Technology, then pivoting into product leadership roles at eBay and LexisNexis — where I now own a <strong>~$700M KYC product</strong> and lead the consolidation of legacy access systems into a unified IAM platform.
+      </p>
+      <p>
+        I'm driven by the intersection of user research, technical feasibility, and business strategy. I've led design thinking workshops, built wireframes, written PRDs, and shipped to millions of users — always anchoring decisions in customer outcomes.
+      </p>
+      <p>
+        Outside work: <strong>International Chess player</strong> (FIDE 1524) and Harvard Conference presenter on climatic innovation.
+      </p>
+      <div class="achievements">
+        <div class="achievement-item">Conference Presenter — Harvard University (Climatic Solutions)</div>
+        <div class="achievement-item">International Chess Champion — FIDE Rating 1524</div>
+        <div class="achievement-item">IBM Certifications: Product Management · Design Thinking</div>
+      </div>
+    </div>
+    <div class="about-right">
+      <div class="skills-group">
+        <div class="skills-group-label">Product Skills</div>
+        <div class="tags">
+          <span class="tag">Agile / Scrum</span>
+          <span class="tag">PRD Writing</span>
+          <span class="tag">Roadmapping</span>
+          <span class="tag">UX Design</span>
+          <span class="tag">Backlog Refinement</span>
+          <span class="tag">Design Thinking</span>
+          <span class="tag">Market Research</span>
+          <span class="tag">Go-to-Market</span>
+          <span class="tag">Stakeholder Mgmt</span>
+          <span class="tag">OKRs</span>
+        </div>
+      </div>
+      <div class="skills-group">
+        <div class="skills-group-label">Technical</div>
+        <div class="tags">
+          <span class="tag">SQL</span>
+          <span class="tag">JIRA</span>
+          <span class="tag">Confluence</span>
+          <span class="tag">Git</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">Google Analytics</span>
+          <span class="tag">Auth0</span>
+          <span class="tag">HTML/CSS</span>
+          <span class="tag">Jenkins</span>
+        </div>
+      </div>
+      <div class="skills-group">
+        <div class="skills-group-label">AI Tools</div>
+        <div class="tags">
+          <span class="tag">ChatGPT</span>
+          <span class="tag">Claude</span>
+          <span class="tag">Copilot</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-label">02 — Career</div>
+  <h2>Professional<br>Experience</h2>
+  <div class="exp-timeline">
+
+    <div class="exp-item">
+      <div class="exp-type-badge">Current Role</div>
+      <div class="exp-header">
+        <div class="exp-company">LexisNexis Risk Solutions</div>
+        <div class="exp-period">Aug 2025 — Present</div>
+      </div>
+      <div class="exp-role">Product Manager II · Chicago, IL</div>
+      <ul class="exp-bullets">
+        <li>Own KYC and IAM (Identity Access Management) product development, defining <strong>RBAC model, user lifecycle, and Auth0-based architecture</strong> to consolidate 3+ legacy access systems into a unified platform</li>
+        <li>Drive <strong>BA Portal (~$700M revenue)</strong>, leading customer issue resolution and end-to-end delivery across refinement, sprint planning, release planning, and Scrum of Scrums</li>
+        <li>Conceptualized and prototyped an <strong>AI-driven risk intelligence overlay</strong> (heatmap + corridor simulator) to enhance KYC decisioning and unlock new revenue — currently under cross-functional and legal evaluation</li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div class="exp-company">eBay (via Glansa LLC)</div>
+        <div class="exp-period">Mar 2025 — Aug 2025</div>
+      </div>
+      <div class="exp-role">Product Manager · Austin, TX</div>
+      <ul class="exp-bullets">
+        <li>Led routing logic and PRDs for <strong>Genesys Cloud integration</strong> into eBay's contact center, reducing average handling time (AHT) by <strong>7.2%</strong></li>
+        <li>Identified high-cost misrouting in Motors (Caramel) flow and redesigned IVR/web routing logic, <strong>reducing unnecessary call transfers (~$0.8–$1 per interaction)</strong></li>
+        <li>Designed and launched an internal automation product for queue and index mapping, <strong>reducing manual effort by 60%</strong> and improving configuration accuracy</li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div class="exp-company">Platned</div>
+        <div class="exp-period">Jun 2024 — Aug 2024</div>
+      </div>
+      <div class="exp-role">Product Marketing & Sales Intern · Staten Island, NY</div>
+      <ul class="exp-bullets">
+        <li>Benchmarked 8 ERP competitors and developed a <strong>go-to-market plan targeting 7% adoption increase</strong></li>
+        <li>Executed multichannel campaigns via Google Analytics and LinkedIn, achieving <strong>5% growth in qualified leads</strong></li>
+        <li>Coordinated global strategy across <strong>US, UK, and Sri Lanka</strong> markets, contributing to 8% market share increase</li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div class="exp-company">Duke University</div>
+        <div class="exp-period">Aug 2024 — Dec 2024</div>
+      </div>
+      <div class="exp-role">Graduate Teaching Assistant — Design Thinking & Innovation · Durham, NC</div>
+      <ul class="exp-bullets">
+        <li>Mentored <strong>35 students across 7 client projects</strong>, guiding stakeholder communication, strategic positioning, and design thinking application to real-world challenges</li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div class="exp-company">Ottalaus Health</div>
+        <div class="exp-period">Sep 2023 — Dec 2023</div>
+      </div>
+      <div class="exp-role">Student Consultant · Durham, NC</div>
+      <ul class="exp-bullets">
+        <li>Conducted <strong>45+ customer interviews</strong> to identify user needs and develop the ZIA Guardian+ product approach in a <strong>$4.1B market</strong></li>
+        <li>Created wireframes and 2 user personas for Remote Patient Monitoring UI/UX; designed HIPAA-compliant privacy features using agile methods</li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div class="exp-company">Motherson Technology Services</div>
+        <div class="exp-period">Feb 2023 — Jun 2023</div>
+      </div>
+      <div class="exp-role">Engineer I · Noida, India</div>
+      <ul class="exp-bullets">
+        <li>Built an internal onboarding app using <strong>MySQL and Node.js</strong>, reducing assignment time by <strong>15%</strong> and boosting productivity by 18%</li>
+        <li>Collaborated across Engineering, Design, and HR to streamline onboarding by bridging cross-functional communication gaps</li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div class="exp-company">Rebel Foods</div>
+        <div class="exp-period">Jul 2021 — Jul 2022</div>
+      </div>
+      <div class="exp-role">Software Development Engineer I · Gurgaon, India</div>
+      <ul class="exp-bullets">
+        <li>Developed payment APIs using <strong>Node.js & MySQL</strong>, integrating CRED, PhonePe, Paytm for <strong>~1M users</strong> — increasing transaction completion by 5%</li>
+        <li>Translated customer insights into product requirements for group ordering feature, <strong>increasing engagement by 4%</strong></li>
+        <li>Facilitated cross-functional workshop to define storefront product roadmap, aligning business, user, and operational needs</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-label">03 — Academic</div>
+  <h2>Education</h2>
+  <div class="edu-grid">
+    <div class="edu-card">
+      <div class="edu-degree">Master of Engineering Management</div>
+      <div class="edu-school">Duke University</div>
+      <div class="edu-period">Durham, NC · Aug 2023 — Dec 2024</div>
+      <div class="edu-gpa">3.93 <span>/ 4.00 GPA</span></div>
+      <div class="edu-courses">
+        Product Management · Design Thinking & Innovation · Product Marketing · Management in High-Tech Industries · Competitive Strategies in Technology · Finance · Intellectual Property · Business Law & Entrepreneurship
+      </div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-degree">B.Tech — Computer Science & Engineering</div>
+      <div class="edu-school">VIT University</div>
+      <div class="edu-period">Vellore, India · May 2017 — Jun 2021</div>
+      <div class="edu-gpa">3.50 <span>/ 4.00 GPA</span></div>
+      <div class="edu-courses">
+        New Product Development · Marketing & Lean Startup Management · Technical Solutions for Real-World Problems · Data Structures · Algorithms · Software Engineering
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT EXPERIENCE -->
+<section id="product">
+  <div class="section-label">04 — Case Studies</div>
+  <h2>Product<br>Experience</h2>
+  <p class="product-intro">
+    Case studies and strategic presentations developed during coursework at Duke and consulting engagements — covering competitive landscape analyses, go-to-market strategies, and product positioning for companies undergoing disruption.
+  </p>
+  <div class="product-categories">
+    <div>
+      <div class="product-category-title">Product Management</div>
+      <div class="product-grid">
+        <div class="product-card"><div class="company">Case Study</div>SculpIT — Interior Design Platform</div>
+        <div class="product-card"><div class="company">Case Study</div>Spotify Growth & Monetization</div>
+        <div class="product-card"><div class="company">Financial Analysis</div>Tesla vs Ford — Comparative Study</div>
+        <div class="product-card"><div class="company">Pricing Strategy</div>Basecamp Pricing Case Study</div>
+      </div>
+    </div>
+    <div>
+      <div class="product-category-title">Product Strategy</div>
+      <div class="product-grid">
+        <div class="product-card"><div class="company">Competitive Strategy</div>Amazon — Market Expansion</div>
+        <div class="product-card"><div class="company">Strategy</div>Teladoc Health — Growth Analysis</div>
+        <div class="product-card"><div class="company">Scenario Planning</div>Tesla 2030 — Future Scenarios</div>
+        <div class="product-card"><div class="company">Live Case</div>Disney — Strategic Response</div>
+      </div>
+    </div>
+    <div>
+      <div class="product-category-title">Product Marketing</div>
+      <div class="product-grid">
+        <div class="product-card"><div class="company">Case Study</div>Rent the Runway — Brand Strategy</div>
+        <div class="product-card"><div class="company">Marketing</div>Olympic Rent a Car</div>
+        <div class="product-card"><div class="company">GTM Strategy</div>Basecamp — Market Entry</div>
+        <div class="product-card"><div class="company">DTC Analysis</div>Pedal Spark — Amazon Strategy</div>
+        <div class="product-card"><div class="company">Brand Awareness</div>Mountain Man Brewing</div>
+        <div class="product-card"><div class="company">Growth</div>Carnegie Learning — EdTech</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRENGTHS -->
+<section id="strengths">
+  <div class="section-label">05 — CliftonStrengths</div>
+  <h2>How I Show Up<br>as a Leader</h2>
+  <div class="strengths-grid">
+    <div class="strength-card">
+      <div class="strength-num">01</div>
+      <div class="strength-name">Competition</div>
+      <div class="strength-desc">Measures progress against others; strives for excellence and first-place outcomes.</div>
+      <div class="strength-tags">
+        <span class="strength-tag">Drive Performance</span>
+        <span class="strength-tag">Foster Excellence</span>
+        <span class="strength-tag">Best Practices</span>
+      </div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-num">02</div>
+      <div class="strength-name">Activator</div>
+      <div class="strength-desc">Turns thoughts into action. Impatient with talk — wants to make things happen now.</div>
+      <div class="strength-tags">
+        <span class="strength-tag">Initiate Action</span>
+        <span class="strength-tag">Encourage Proactivity</span>
+        <span class="strength-tag">Overcome Delays</span>
+      </div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-num">03</div>
+      <div class="strength-name">Adaptability</div>
+      <div class="strength-desc">Prefers to go with the flow — a "now" person who discovers the future one day at a time.</div>
+      <div class="strength-tags">
+        <span class="strength-tag">Handle Change</span>
+        <span class="strength-tag">Stay Flexible</span>
+        <span class="strength-tag">Support Needs</span>
+      </div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-num">04</div>
+      <div class="strength-name">Empathy</div>
+      <div class="strength-desc">Senses others' feelings by imagining yourself in their lives or situations.</div>
+      <div class="strength-tags">
+        <span class="strength-tag">Build Relationships</span>
+        <span class="strength-tag">Enhance Cohesion</span>
+        <span class="strength-tag">Resolve Conflicts</span>
+      </div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-num">05</div>
+      <div class="strength-name">Consistency</div>
+      <div class="strength-desc">Treats everyone the same; craves stable routines and clear rules everyone can follow.</div>
+      <div class="strength-tags">
+        <span class="strength-tag">Ensure Fairness</span>
+        <span class="strength-tag">Maintain Stability</span>
+        <span class="strength-tag">Promote Trust</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">06 — Connect</div>
+  <h2>Get in<br>Touch</h2>
+  <div class="contact-grid">
+    <div>
+      <p class="contact-intro">
+        I'm always open to discussing product strategy, new opportunities, or just connecting with fellow builders. Feel free to reach out through any of the channels below.
+      </p>
+      <div class="contact-links">
+        <a href="mailto:bg188@duke.edu" class="contact-link">
+          <div class="contact-link-icon">✉</div>
+          bg188@duke.edu
+        </a>
+        <a href="mailto:bharatg1004@gmail.com" class="contact-link">
+          <div class="contact-link-icon">✉</div>
+          bharatg1004@gmail.com
+        </a>
+        <a href="https://linkedin.com/in/bharat-gupta-25ab9b147/" target="_blank" class="contact-link">
+          <div class="contact-link-icon">in</div>
+          linkedin.com/in/bharat-gupta-25ab9b147
+        </a>
+        <a href="tel:9848882220" class="contact-link">
+          <div class="contact-link-icon">☎</div>
+          (984) 888-2220
+        </a>
+      </div>
+    </div>
+    <div class="contact-right">
+      <h3>Quick Info</h3>
+      <div class="info-row">
+        <div class="info-label">Current Role</div>
+        <div class="info-value">Product Manager II — LexisNexis Risk Solutions</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Location</div>
+        <div class="info-value">Chicago, IL</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Education</div>
+        <div class="info-value">MEng Management — Duke University (GPA 3.93)</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Expertise</div>
+        <div class="info-value">KYC · IAM · B2B SaaS · Contact Center · ERP</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Notable</div>
+        <div class="info-value">FIDE Chess 1524 · Harvard Conference Presenter</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Bharat Gupta</span>
+  <span>Product Manager — Chicago, IL</span>
+</footer>
+
+<script>
+  // Scroll animation for experience items
+  const items = document.querySelectorAll('.exp-item');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  items.forEach(i => observer.observe(i));
+
+  // Active nav highlight
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    });
+  });
+</script>
+</body>
+</html>
