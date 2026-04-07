@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bharat Gupta — Product Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f6f2;
+    --surface: #ffffff;
+    --surface2: #f0ede6;
+    --border: rgba(0,0,0,0.09);
+    --accent: #b8843a;
+    --accent2: #4f46e5;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── PHOTO ── */
+  .hero-photo {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    border: 4px solid var(--surface);
+    box-shadow: 0 8px 32px rgba(184,132,58,0.15);
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.4rem 4rem;
+    background: rgba(247,246,242,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 8rem 4rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 80% 50%, rgba(79,70,229,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(184,132,58,0.08) 0%, transparent 60%);
+  }
+  .hero-grid-overlay {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+  }
+  .hero-left { position: relative; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--accent);
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 5.5vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1.0;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+  h1 span { color: var(--accent); }
+  .hero-subtitle {
+    font-size: 1.1rem;
+    color: var(--muted);
+    margin: 1.5rem 0 2.5rem;
+    line-height: 1.7;
+    max-width: 440px;
+  }
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    padding: 0.85rem 2rem;
+    background: var(--accent);
+    color: #0a0a0f;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none; cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .btn-primary:hover { background: #dfc08a; transform: translateY(-2px); }
+  .btn-outline {
+    padding: 0.85rem 2rem;
+    background: transparent;
+    color: var(--text);
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+  .hero-right {
+    display: flex; justify-content: flex-end; align-items: center;
+    position: relative;
+  }
+  .hero-stats {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .stat-card {
+    padding: 1.8rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.8s ease both;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+  .stat-card:nth-child(2) { animation-delay: 0.1s; }
+  .stat-card:nth-child(3) { animation-delay: 0.2s; }
+  .stat-card:nth-child(4) { animation-delay: 0.3s; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .stat-num span { color: var(--accent); font-size: 1.4rem; }
+  .stat-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .motto {
+    position: absolute; bottom: 3rem; left: 4rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .motto em { color: var(--accent); font-style: normal; }
+
+  /* ── SECTION BASE ── */
+  section { padding: 7rem 4rem; }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1; max-width: 40px; height: 1px;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.15;
+    margin-bottom: 3rem;
+  }
+
+  /* ── ABOUT ── */
+  #about { background: var(--surface2); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+  .about-text p {
+    color: var(--muted);
+    line-height: 1.9;
+    margin-bottom: 1.2rem;
+    font-size: 0.97rem;
+  }
+  .about-text p strong { color: var(--text); font-weight: 500; }
+  .about-right {}
+  .skills-group { margin-bottom: 2rem; }
+  .skills-group-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+  }
+  .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tag {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.75rem;
+    font-family: 'DM Mono', monospace;
+    border: 1px solid var(--border);
+    color: var(--text);
+    letter-spacing: 0.05em;
+    transition: all 0.25s;
+  }
+  .tag:hover { border-color: var(--accent); color: var(--accent); }
+  .achievements {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--surface);
+    border-left: 2px solid var(--accent);
+  }
+  .achievement-item {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    margin-bottom: 0.8rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .achievement-item:last-child { margin-bottom: 0; }
+  .achievement-item::before {
+    content: '◆';
+    color: var(--accent);
+    font-size: 0.5rem;
+    margin-top: 0.35rem;
+    flex-shrink: 0;
+  }
+
+  /* ── EXPERIENCE ── */
+  #experience { background: var(--bg); }
+  .exp-timeline { position: relative; }
+  .exp-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+  .exp-item {
+    padding-left: 2.5rem;
+    margin-bottom: 4rem;
+    position: relative;
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.6s ease;
+  }
+  .exp-item.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .exp-item.visible { opacity: 1; transform: translateY(0); }
+  .exp-item::before {
+    content: '';
+    position: absolute;
+    left: -4px; top: 6px;
+    width: 9px; height: 9px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(200,169,110,0.5);
+  }
+  .exp-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 0.6rem;
+    flex-wrap: wrap; gap: 0.5rem;
+  }
+  .exp-company {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--text);
+  }
+  .exp-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid rgba(200,169,110,0.3);
+  }
+  .exp-role {
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .exp-bullets { list-style: none; }
+  .exp-bullets li {
+    font-size: 0.88rem;
+    color: #4b5563;
+    line-height: 1.8;
+    padding-left: 1.2rem;
+    position: relative;
+    margin-bottom: 0.7rem;
+  }
+  .exp-bullets li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--accent2);
+    font-size: 0.8rem;
+  }
+  .exp-bullets li strong { color: var(--text); font-weight: 600; }
+  .exp-type-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    background: rgba(124,110,245,0.12);
+    color: var(--accent2);
+    border: 1px solid rgba(124,110,245,0.25);
+    margin-bottom: 0.5rem;
+  }
+
+  /* ── EDUCATION ── */
+  #education { background: var(--surface); }
+  .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .edu-card {
+    padding: 2.5rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .edu-card:hover { border-color: rgba(200,169,110,0.35); }
+  .edu-card::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .edu-card:hover::after { transform: scaleX(1); }
+  .edu-school {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+  .edu-degree {
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .edu-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+  }
+  .edu-gpa {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  .edu-gpa span { font-size: 0.8rem; color: var(--muted); font-family: 'DM Sans', sans-serif; }
+  .edu-courses {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ── PRODUCT EXPERIENCE ── */
+  #product { background: var(--bg); }
+  .product-intro {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 700px;
+    margin-bottom: 3rem;
+  }
+  .product-categories { display: flex; flex-direction: column; gap: 3rem; }
+  .product-category-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+  .product-card {
+    padding: 1.25rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: 0.82rem;
+    color: var(--text);
+    transition: all 0.25s;
+    cursor: default;
+  }
+  .product-card:hover { border-color: rgba(200,169,110,0.4); background: var(--surface2); }
+  .product-card .company { font-size: 0.68rem; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.3rem; }
+
+  /* ── STRENGTHS ── */
+  #strengths { background: var(--surface); }
+  .strengths-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.2rem; }
+  .strength-card {
+    padding: 2rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .strength-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .strength-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: rgba(0,0,0,0.08);
+    line-height: 1;
+    margin-bottom: 0.75rem;
+  }
+  .strength-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.6rem;
+  }
+  .strength-desc {
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .strength-tags { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.75rem; }
+  .strength-tag {
+    font-size: 0.65rem;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    padding: 0.2rem 0.4rem;
+    border: 1px solid rgba(200,169,110,0.2);
+    text-align: center;
+  }
+
+  /* ── CONTACT ── */
+  #contact { background: var(--bg); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+  .contact-intro { font-size: 0.95rem; color: var(--muted); line-height: 1.8; margin-bottom: 2rem; }
+  .contact-links { display: flex; flex-direction: column; gap: 1rem; }
+  .contact-link {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.85rem;
+    transition: all 0.3s;
+  }
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+  .contact-link-icon {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .contact-right {
+    padding: 2.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .contact-right h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+  .info-row { margin-bottom: 1.2rem; }
+  .info-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.25rem; }
+  .info-value { font-size: 0.88rem; color: var(--text); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 2rem 4rem;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  footer span { font-family: 'DM Mono', monospace; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-left { animation: fadeUp 0.9s ease both; }
+  .hero-right { animation: fadeUp 0.9s ease 0.2s both; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; }
+    .hero-right { margin-top: 3rem; justify-content: flex-start; }
+    .hero-stats { grid-template-columns: 1fr 1fr; width: 100%; }
+    section { padding: 5rem 1.5rem; }
+    .about-grid, .edu-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .strengths-grid { grid-template-columns: 1fr 1fr; }
+    .motto { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">BG</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#product">Product Work</a></li>
+    <li><a href="#strengths">Strengths</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-overlay"></div>
+  <div class="hero-left">
+    <img src="profile.jpg" alt="Bharat Gupta" class="hero-photo">
+    <div class="hero-tag">Product Manager · Chicago, IL</div>
+    <h1>Bharat<br><span>Gupta</span></h1>
+    <p class="hero-subtitle">
+      Engineering-rooted PM bridging technical depth with customer empathy. 
+      Currently building KYC & identity products at <strong style="color:var(--text)">LexisNexis Risk Solutions</strong> — 
+      previously eBay, Duke, Rebel Foods.
+    </p>
+    <div class="hero-ctas">
+      <a href="#experience" class="btn-primary">View Experience</a>
+      <a href="#contact" class="btn-outline">Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-stats">
+      <div class="stat-card">
+        <div class="stat-num">$700<span>M</span></div>
+        <div class="stat-label">Product Revenue Owned</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">3.93<span>/4</span></div>
+        <div class="stat-label">Duke University GPA</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">60<span>%</span></div>
+        <div class="stat-label">Manual Effort Reduced</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">3<span>+</span></div>
+        <div class="stat-label">Years PM + Eng Experience</div>
+      </div>
+    </div>
+  </div>
+  <div class="motto">"If your only tool is a hammer, <em>every problem looks like a nail.</em>"</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">01 — Profile</div>
+  <h2>A Little<br>About Me</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>
+        I'm a <strong>Product Manager with an engineering foundation</strong> — holding a Master of Engineering Management from Duke University and a B.Tech in Computer Science from VIT University, India.
+      </p>
+      <p>
+        My career spans both sides of the product equation: writing production code at Rebel Foods and Motherson Technology, then pivoting into product leadership roles at eBay and LexisNexis — where I now own a <strong>~$700M KYC product</strong> and lead the consolidation of legacy access systems into a unified IAM platform.
+      </p>
+      <p>
+        I'm driven by the intersection of user research, technical feasibility, and business strategy. I've led design thinking workshops, built wireframes, written PRDs, and shipped to millions of users — always anchoring decisions in customer outcomes.
+      </p>
+      <p>
+        Outside work: <strong>International Chess player</strong> (FIDE 1524) and Harvard Conference presenter on climatic innovation.
+      </p>
+      <div class="achievements">
+        <div class="achievement-item">Conference Presenter — Harvard University (Climatic Solutions)</div>
+        <div class="achievement-item">International Chess Champion — FIDE Rating 1524</div>
+        <div class="achievement-item">IBM Certifications: Product Management · Design Thinking</div>
+      </div>
+    </div>
+    <div class="about-right">
+      <div class="skills-group">
+        <div class="skills-group-label">Product Skills</div>
+        <div class="tags">
+          <span class="tag">Agile / Scrum</span>
+          <span class="tag">PRD Writing</span>
+          <span class="tag">Roadmapping</span>
+          <span class="tag">UX Design</span>
+          <span class="tag">Backlog Refinement</span>
+          <span class="tag">Design Thinking</span>
+          <span class="tag">Market Research</span>
+          <span class="tag">Go-to-Market</span>
+          <span class="tag">Stakeholder Mgmt</span>
+          <span class="tag">OKRs</span>
+        </div>
+      </div>
+      <div class="skills-group">
+        <div class="skills-group-label">Technical</div>
+        <div class="tags">
+          <span class="tag">SQL</span>
+          <span class="tag">JIRA</span>
+          <span class="tag">Confluence</span>
+          <span class="tag">Git</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">Google Analytics</span>
+          <span class="tag">Auth0</span>
+          <span class="tag">HTML/CSS</span>
+          <span class="tag">Jenkins</span>
+        </div>
+      </div>
+      <div class="skills-group">
+        <div class="skills-group-label">AI Tools</div>
+        <div class="tags">
+          <span class="tag">ChatGPT</span>
+          <span class="tag">Claude</span>
+          <span class="tag">Copilot</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-label">02 — Career</div>
+  <h2>Professional<br>Experience</h2>
+  <div class="exp-timeline">
+
+    <div class="exp-item">
+      <div class="exp-type-badge">Current Role</div>
+      <div class="exp-header">
+        <div class="exp-company">LexisNexis Risk Solutions</div>
+        <div class="exp-period">Aug 2025 — Present</div>
+      </div>
+      <div class="exp-role">Product Manager II · Chicago, IL</div>
+      <ul class="exp-bullets">
+        <li>The organization had 3+ fragmented access systems with inconsistent permissions and security gaps. I took ownership of the IAM product — designing a unified <strong>Auth0-based architecture with a strict RBAC model</strong> (6 defined roles, zero custom permissions) and a full user lifecycle from invite to deactivation, replacing ambiguity with a scalable, secure platform</li>
+        <li>Owning the <strong>BA Portal (~$700M KYC product)</strong> end-to-end: I triage customer issues, write user stories, run sprint refinement and planning, coordinate Scrum of Scrums, and lead release cycles — while holding the team to a ±5 day release communication standard to keep customer trust intact</li>
+        <li>Noticed that KYC analysts lacked visual tools for risk decisioning, so I conceptualized and prototyped an <strong>AI-powered risk intelligence overlay</strong> — a heatmap + corridor simulator that gives analysts geographic risk visibility and transaction scenario modeling. Currently navigating cross-functional and legal review to unlock a potential new revenue stream</li>
+        <li>Led dependency-mapping workshops across Product, Platform, Auth0, and Support teams for IAM Phase 3 — surfacing hard dependencies and sequencing constraints before a single line of code was written, <strong>de-risking delivery and preventing scope creep</strong></li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div class="exp-company">eBay (via Glansa LLC)</div>
+        <div class="exp-period">Mar 2025 — Aug 2025</div>
+      </div>
+      <div class="exp-role">Product Manager — CS Tech (IRP) · Austin, TX</div>
+      <ul class="exp-bullets">
+        <li>The core problem: when customers couldn't resolve issues through self-service, they'd describe their problem to a virtual assistant — but the wrong agent would often pick it up. I <strong>mapped CCR (Customer Complaint Reason) flows across chat and voice</strong>, designed Genesys Cloud routing logic and GRS rules for skill-based assignment, and defined which support options appear per issue type. The result: <strong>AHT reduced by 7.2%</strong> across UK and US regions</li>
+        <li>Discovered that eBay Motors customers raising Caramel-related issues were landing in general queues and bouncing between agents — each misroute costing $0.80–$1.00. I dug into the root cause (Caramel had no HelpHub page; IVR logic didn't distinguish it), <strong>redesigned both the web routing flow and IVR</strong> to send Motors queries directly to the right team, significantly cutting unnecessary transfers</li>
+        <li>Reviewed 100+ call recordings via NICE software and noticed agents keeping Word/Excel files open alongside the Agent Desktop to manage prewritten responses. I wrote PRDs and use cases for <strong>Agent Desktop and Communicator enhancements</strong> that consolidate these workflows into one place — turning an observation from call recordings into a concrete internal product improvement</li>
+        <li>Led an internal automation tool for queue and index mapping — replacing a highly manual process prone to configuration errors. I documented requirements, gathered stakeholder input, and designed wireframes in Lucidchart. <strong>Projected to reduce engineering setup effort by 60%</strong> once live</li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div class="exp-company">Platned</div>
+        <div class="exp-period">Jun 2024 — Aug 2024</div>
+      </div>
+      <div class="exp-role">Product Marketing & Sales Intern · Staten Island, NY</div>
+      <ul class="exp-bullets">
+        <li>Platned helps businesses navigate ERP selection (IFS, Acumatica) — but prospects were confused about which solution fit their needs. I mapped the customer journey from awareness to post-purchase, identified drop-off points using Google Analytics and CRM data, and <strong>built a GTM plan with targeted content at each stage</strong> — comparison guides, demos, ROI breakdowns — to address real pain points like cost anxiety and post-purchase support fears</li>
+        <li>Ran competitor benchmarking across 8 ERP companies to identify gaps, then developed content and SEO improvements targeting a <strong>7% increase in adoption</strong>; multichannel campaigns drove <strong>5% growth in qualified leads</strong> across US, UK, and Sri Lanka</li>
+        <li>Launched the "Platned as Planted" sustainability campaign — mailing seed packets to customers as a brand recall mechanism. What sounds quirky was deliberate: it sparked conversations, reinforced brand values, and <strong>measurably boosted engagement</strong> in a category (ERP consulting) where differentiation is hard</li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div class="exp-company">Duke University</div>
+        <div class="exp-period">Aug 2024 — Dec 2024</div>
+      </div>
+      <div class="exp-role">Graduate Teaching Assistant — Design Thinking & Innovation · Durham, NC</div>
+      <ul class="exp-bullets">
+        <li>Mentored <strong>35 students across 7 client projects</strong>, guiding stakeholder communication, strategic positioning, and design thinking application to real-world challenges</li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div class="exp-company">Ottalaus Health</div>
+        <div class="exp-period">Sep 2023 — Dec 2023</div>
+      </div>
+      <div class="exp-role">Student Consultant · Durham, NC</div>
+      <ul class="exp-bullets">
+        <li>No analytics, no live product, no existing data — just a problem space in a <strong>$4.1B remote patient monitoring market</strong>. I conducted 45+ interviews with patients, caregivers, and health professionals, then built empathy maps and user personas to surface three core unmet needs: real-time emergency alerts, private health journaling, and community support for chronic patients</li>
+        <li>Applied MoSCoW prioritization to translate those needs into three product concepts — <strong>ZIA Guardian Alert Plus</strong> (SOS + vital threshold alerts), <strong>Privacy Pro</strong> (encrypted journaling with user-controlled sharing), and <strong>ZIA Companion</strong> (caregiver/doctor ecosystem). Created wireframes in Figma and Canva, designed HIPAA-compliant data-sharing flows, and validated with stakeholders through feedback loops</li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div class="exp-company">Motherson Technology Services</div>
+        <div class="exp-period">Feb 2023 — Jun 2023</div>
+      </div>
+      <div class="exp-role">Engineer I · Noida, India</div>
+      <ul class="exp-bullets">
+        <li>HR managers and new hires were stuck in a loop of paper checklists, scattered emails, and unclear task ownership. Rather than just building what was asked, I <strong>interviewed both HR teams and managers separately</strong> to understand where friction actually lived — then worked with Engineering and Design to build an onboarding app with a digital checklist, task assignment module, resource library, and messaging system. <strong>Assignment time dropped 15%, productivity up 18%</strong></li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div class="exp-company">Rebel Foods (EatSure)</div>
+        <div class="exp-period">Jul 2021 — Jul 2022</div>
+      </div>
+      <div class="exp-role">Software Development Engineer I · Gurgaon, India</div>
+      <ul class="exp-bullets">
+        <li>Built and scaled payment APIs integrating CRED, PhonePe, and Paytm for a platform with <strong>501M+ users</strong> — during COVID-19 when transaction reliability was critical. Delivered a <strong>5% increase in transaction completion</strong> and 2% daily active user growth by making payments seamless under high load</li>
+        <li>My first real product leadership experience: I led the group ordering feature from scratch — gathering requirements through app reviews, customer feedback, and UX research; running a cross-functional workshop to align business and ops; and managing delivery end-to-end in JIRA. The feature <strong>increased engagement by 4%</strong> and exceeded revenue expectations. What I learned: structured feedback loops and openness to pushback matter more than having all the answers</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-label">03 — Academic</div>
+  <h2>Education</h2>
+  <div class="edu-grid">
+    <div class="edu-card">
+      <div class="edu-degree">Master of Engineering Management</div>
+      <div class="edu-school">Duke University</div>
+      <div class="edu-period">Durham, NC · Aug 2023 — Dec 2024</div>
+      <div class="edu-gpa">3.93 <span>/ 4.00 GPA</span></div>
+      <div class="edu-courses">
+        Product Management · Design Thinking & Innovation · Product Marketing · Management in High-Tech Industries · Competitive Strategies in Technology · Finance · Intellectual Property · Business Law & Entrepreneurship
+      </div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-degree">B.Tech — Computer Science & Engineering</div>
+      <div class="edu-school">VIT University</div>
+      <div class="edu-period">Vellore, India · May 2017 — Jun 2021</div>
+      <div class="edu-gpa">3.50 <span>/ 4.00 GPA</span></div>
+      <div class="edu-courses">
+        New Product Development · Marketing & Lean Startup Management · Technical Solutions for Real-World Problems · Data Structures · Algorithms · Software Engineering
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT EXPERIENCE -->
+<section id="product">
+  <div class="section-label">04 — Case Studies</div>
+  <h2>Product<br>Experience</h2>
+  <p class="product-intro">
+    Case studies and strategic presentations developed during coursework at Duke and consulting engagements — covering competitive landscape analyses, go-to-market strategies, and product positioning for companies undergoing disruption.
+  </p>
+  <div class="product-categories">
+    <div>
+      <div class="product-category-title">Product Management</div>
+      <div class="product-grid">
+        <a href="https://www.canva.com/design/DAGHYzb9vII/xJAsYEhG8USFpETW1gy0Ig/view" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;"><div class="company">Case Study</div>SculpIT — Interior Design Platform <span style="font-size:0.65rem;color:var(--accent2);margin-left:0.3rem;">↗</span></a>
+        <a href="https://www.canva.com/design/DAGRhWHxRAk/6kiVGC-11NOiQRP2H1_bfw/view" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;"><div class="company">Case Study</div>Spotify Growth & Monetization <span style="font-size:0.65rem;color:var(--accent2);margin-left:0.3rem;">↗</span></a>
+        <a href="https://www.canva.com/design/DAGRhboTEkc/X5H3MUheVvtgQO15fVT1qA/view" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;"><div class="company">Financial Analysis</div>Tesla vs Ford — Comparative Study <span style="font-size:0.65rem;color:var(--accent2);margin-left:0.3rem;">↗</span></a>
+        <a href="https://www.canva.com/design/DAGRheA8hJ0/UjslUQ0kiorK6WSMLRfF5Q/view" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;"><div class="company">Pricing Strategy</div>Basecamp Pricing Case Study <span style="font-size:0.65rem;color:var(--accent2);margin-left:0.3rem;">↗</span></a>
+      </div>
+    </div>
+    <div>
+      <div class="product-category-title">Product Strategy</div>
+      <div class="product-grid">
+        <a href="https://www.canva.com/design/DAGHYgcyqJw/T1nkNzzMpWHsXI3WGSaHEA/view#1" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;"><div class="company">Competitive Strategy</div>Amazon — Market Expansion <span style="font-size:0.65rem;color:var(--accent2);margin-left:0.3rem;">↗</span></a>
+        <a href="https://www.canva.com/design/DAGHYimxUuo/arvB2L0nJ9baPFnknZxG5w/view" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;"><div class="company">Strategy</div>Teladoc Health — Growth Analysis <span style="font-size:0.65rem;color:var(--accent2);margin-left:0.3rem;">↗</span></a>
+        <a href="https://www.canva.com/design/DAGHYsOxTRs/2qH7945iYcQLInBy9rofqA/view" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;"><div class="company">Scenario Planning</div>Tesla 2030 — Future Scenarios <span style="font-size:0.65rem;color:var(--accent2);margin-left:0.3rem;">↗</span></a>
+        <a href="https://www.canva.com/design/DAGHYlGPthU/6l3HfOF15L0mtYsmJRW8ZA/view" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;"><div class="company">Live Case</div>Disney — Strategic Response <span style="font-size:0.65rem;color:var(--accent2);margin-left:0.3rem;">↗</span></a>
+      </div>
+    </div>
+    <div>
+      <div class="product-category-title">Product Marketing</div>
+      <div class="product-grid">
+        <a href="https://www.canva.com/design/DAGHYsJaUrM/pW2F0nQAYkA0YLvCYryIDQ/view" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;"><div class="company">Case Study</div>Rent the Runway — Brand Strategy <span style="font-size:0.65rem;color:var(--accent2);margin-left:0.3rem;">↗</span></a>
+        <a href="https://www.canva.com/design/DAGHYhm4nNI/36nKp9RhbLLVZReMOlsFKA/view" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;"><div class="company">Marketing</div>Olympic Rent a Car <span style="font-size:0.65rem;color:var(--accent2);margin-left:0.3rem;">↗</span></a>
+        <a href="https://www.canva.com/design/DAGBF0MNgFE/MP8mB3vz54cK-9-HNcVndA/view" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;"><div class="company">GTM Strategy</div>Basecamp — Market Entry <span style="font-size:0.65rem;color:var(--accent2);margin-left:0.3rem;">↗</span></a>
+        <a href="https://www.canva.com/design/DAGHYhYQ3W4/r6f2kUOupx7O5GgBFK6hig/view" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;"><div class="company">DTC Analysis</div>Pedal Spark — Amazon Strategy <span style="font-size:0.65rem;color:var(--accent2);margin-left:0.3rem;">↗</span></a>
+        <a href="https://www.canva.com/design/DAGHYivzTC0/93XH1U2vQ_vdxgzAb6M9Kg/view" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;"><div class="company">Brand Awareness</div>Mountain Man Brewing <span style="font-size:0.65rem;color:var(--accent2);margin-left:0.3rem;">↗</span></a>
+        <a href="https://www.canva.com/design/DAGHYpHMljw/61uOFusf7Gj_URU_BbgFNw/view" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;"><div class="company">Growth</div>Carnegie Learning — EdTech <span style="font-size:0.65rem;color:var(--accent2);margin-left:0.3rem;">↗</span></a>
+      </div>
+    </div>
+    <div>
+      <div class="product-category-title" style="color:var(--accent);">AI Product Management Prototypes</div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.7;">
+        Interactive product prototypes built using AI tools — demonstrating hands-on PM skills in translating user problems into working product concepts.
+      </div>
+      <div class="product-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));">
+        <a href="payguard-prototype.html" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;border-color:rgba(184,132,58,0.3);position:relative;">
+          <div class="company" style="color:var(--accent);">AI Prototype · KYC / Risk Intel</div>
+          <div style="font-weight:500;margin-bottom:0.5rem;">PayGuard — Payment Corridor Intelligence</div>
+          <div style="font-size:0.75rem;color:var(--muted);line-height:1.6;">Interactive risk heatmap and corridor simulator for KYC decisioning — directly inspired by my LexisNexis AI overlay concept.</div>
+          <span style="font-size:0.65rem;color:var(--accent);margin-top:0.5rem;display:block;">Launch Prototype ↗</span>
+        </a>
+        <a href="nestforge-app.html" target="_blank" class="product-card" style="text-decoration:none;display:block;cursor:pointer;border-color:rgba(79,70,229,0.3);position:relative;">
+          <div class="company" style="color:var(--accent2);">AI Prototype · Interior Design</div>
+          <div style="font-weight:500;margin-bottom:0.5rem;">NestForge — AI Room Designer</div>
+          <div style="font-size:0.75rem;color:var(--muted);line-height:1.6;">AI-powered sustainable interior design app — built on the SculpIT product concept from my Duke coursework, with AR visualization and eco filters.</div>
+          <span style="font-size:0.65rem;color:var(--accent2);margin-top:0.5rem;display:block;">Launch Prototype ↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRENGTHS -->
+<section id="strengths">
+  <div class="section-label">05 — CliftonStrengths</div>
+  <h2>How I Show Up<br>as a Leader</h2>
+  <div class="strengths-grid">
+    <div class="strength-card">
+      <div class="strength-num">01</div>
+      <div class="strength-name">Competition</div>
+      <div class="strength-desc">Measures progress against others; strives for excellence and first-place outcomes.</div>
+      <div class="strength-tags">
+        <span class="strength-tag">Drive Performance</span>
+        <span class="strength-tag">Foster Excellence</span>
+        <span class="strength-tag">Best Practices</span>
+      </div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-num">02</div>
+      <div class="strength-name">Activator</div>
+      <div class="strength-desc">Turns thoughts into action. Impatient with talk — wants to make things happen now.</div>
+      <div class="strength-tags">
+        <span class="strength-tag">Initiate Action</span>
+        <span class="strength-tag">Encourage Proactivity</span>
+        <span class="strength-tag">Overcome Delays</span>
+      </div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-num">03</div>
+      <div class="strength-name">Adaptability</div>
+      <div class="strength-desc">Prefers to go with the flow — a "now" person who discovers the future one day at a time.</div>
+      <div class="strength-tags">
+        <span class="strength-tag">Handle Change</span>
+        <span class="strength-tag">Stay Flexible</span>
+        <span class="strength-tag">Support Needs</span>
+      </div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-num">04</div>
+      <div class="strength-name">Empathy</div>
+      <div class="strength-desc">Senses others' feelings by imagining yourself in their lives or situations.</div>
+      <div class="strength-tags">
+        <span class="strength-tag">Build Relationships</span>
+        <span class="strength-tag">Enhance Cohesion</span>
+        <span class="strength-tag">Resolve Conflicts</span>
+      </div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-num">05</div>
+      <div class="strength-name">Consistency</div>
+      <div class="strength-desc">Treats everyone the same; craves stable routines and clear rules everyone can follow.</div>
+      <div class="strength-tags">
+        <span class="strength-tag">Ensure Fairness</span>
+        <span class="strength-tag">Maintain Stability</span>
+        <span class="strength-tag">Promote Trust</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">06 — Connect</div>
+  <h2>Get in<br>Touch</h2>
+  <div class="contact-grid">
+    <div>
+      <p class="contact-intro">
+        I'm always open to discussing product strategy, new opportunities, or just connecting with fellow builders. Feel free to reach out through any of the channels below.
+      </p>
+      <div class="contact-links">
+        <a href="mailto:bharatg1004@gmail.com" class="contact-link">
+          <div class="contact-link-icon">✉</div>
+          bharatg1004@gmail.com
+        </a>
+        <a href="https://linkedin.com/in/bharat-gupta-25ab9b147/" target="_blank" class="contact-link">
+          <div class="contact-link-icon">in</div>
+          linkedin.com/in/bharat-gupta-25ab9b147
+        </a>
+        <a href="tel:9848882220" class="contact-link">
+          <div class="contact-link-icon">☎</div>
+          (984) 888-2220
+        </a>
+        <a href="https://canva.link/kxnqt15cmw1og00" target="_blank" class="contact-link" style="background:var(--accent);color:#fff;border-color:var(--accent);font-weight:500;">
+          <div class="contact-link-icon" style="background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.3);color:#fff;">↗</div>
+          View Resume
+        </a>
+      </div>
+    </div>
+    <div class="contact-right">
+      <h3>Quick Info</h3>
+      <div class="info-row">
+        <div class="info-label">Current Role</div>
+        <div class="info-value">Product Manager II — LexisNexis Risk Solutions</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Location</div>
+        <div class="info-value">Chicago, IL</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Education</div>
+        <div class="info-value">MEng Management — Duke University (GPA 3.93)</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Expertise</div>
+        <div class="info-value">KYC · IAM · B2B SaaS · Contact Center · ERP</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Notable</div>
+        <div class="info-value">FIDE Chess 1524 · Harvard Conference Presenter</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Bharat Gupta</span>
+  <span>Product Manager — Chicago, IL</span>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare

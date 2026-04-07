@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PayGuard — Payment Corridor Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<style>
+:root {
+  --bg: #0a0c10;
+  --surface: #111318;
+  --surface2: #181c24;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8eaf0;
+  --muted: #6b7280;
+  --accent: #00d4a8;
+  --accent2: #0090ff;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --critical: #dc2626;
+  --low: #10b981;
+  --medium: #f59e0b;
+  --high: #f97316;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* GRID BG */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(0,212,168,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,168,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 56px;
+  background: rgba(10,12,16,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+.nav-tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px;
+}
+.nav-tab {
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.2s;
+  font-family: var(--font-body);
+  border: none;
+  background: transparent;
+  white-space: nowrap;
+}
+.nav-tab.active {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border2);
+}
+.nav-tab:hover:not(.active) { color: var(--text); }
+
+.nav-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  background: rgba(0,212,168,0.1);
+  border: 1px solid rgba(0,212,168,0.2);
+  padding: 3px 10px;
+  border-radius: 99px;
+}
+
+/* MAIN */
+main { padding-top: 56px; position: relative; z-index: 1; }
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* HERO STRIP */
+.hero {
+  padding: 2rem 2rem 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+.hero h1 span { color: var(--accent); }
+.hero-sub { font-size: 13px; color: var(--muted); font-family: var(--font-mono); }
+
+/* STAT STRIP */
+.stat-strip {
+  display: flex;
+  gap: 1px;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border);
+}
+.stat {
+  flex: 1;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  position: relative;
+}
+.stat:first-child { border-radius: 8px 0 0 8px; }
+.stat:last-child { border-radius: 0 8px 8px 0; }
+.stat-val {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+.stat-lbl {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+  font-family: var(--font-mono);
+}
+.stat-delta {
+  position: absolute;
+  top: 12px; right: 12px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+}
+.up { color: var(--low); }
+.dn { color: var(--danger); }
+
+/* MAP PAGE */
+.map-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 0;
+  height: calc(100vh - 56px - 80px - 80px);
+  min-height: 480px;
+  padding: 1.5rem 2rem;
+  gap: 1.5rem;
+}
+
+.map-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.map-title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+.map-body { flex: 1; position: relative; overflow: hidden; }
+#world-svg { width: 100%; height: 100%; }
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+.leg { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+
+/* SIDEBAR */
+.sidebar { display: flex; flex-direction: column; gap: 1rem; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.panel-head {
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.panel-body { padding: 1.25rem; }
+
+/* COUNTRY DETAIL */
+.country-placeholder {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--muted);
+  font-size: 13px;
+}
+.country-placeholder .icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+  opacity: 0.4;
+}
+
+.country-name {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+.risk-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  margin-bottom: 1rem;
+}
+.score-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0 auto 1rem;
+  position: relative;
+}
+.score-num {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+}
+.score-lbl { font-size: 10px; color: var(--muted); font-family: var(--font-mono); }
+
+.dim-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.dim-name { font-size: 12px; color: var(--muted); width: 90px; flex-shrink: 0; }
+.dim-bar { flex: 1; height: 5px; background: rgba(255,255,255,0.05); border-radius: 99px; overflow: hidden; }
+.dim-fill { height: 100%; border-radius: 99px; }
+.dim-val { font-family: var(--font-mono); font-size: 11px; width: 24px; text-align: right; }
+
+/* WATCHLIST */
+.watch-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.watch-item:last-child { border-bottom: none; }
+.watch-item:hover { opacity: 0.75; }
+.watch-flag { font-size: 16px; margin-right: 8px; }
+.watch-name { font-size: 13px; font-weight: 500; }
+.watch-score {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* CORRIDOR PAGE */
+.corridor-layout {
+  padding: 1.5rem 2rem;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 1.5rem;
+  min-height: calc(100vh - 56px - 80px - 80px);
+}
+
+.form-group { margin-bottom: 1.25rem; }
+.form-label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-family: var(--font-mono);
+}
+.form-select, .form-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.2s;
+  appearance: none;
+  cursor: pointer;
+}
+.form-select:focus, .form-input:focus { border-color: var(--accent); }
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: '▾';
+  position: absolute;
+  right: 12px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+  font-size: 12px;
+}
+
+.divider-arrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: -4px 0 1.25rem;
+  color: var(--muted);
+  font-size: 12px;
+}
+.divider-arrow::before, .divider-arrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.analyze-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.analyze-btn:hover { opacity: 0.9; }
+.analyze-btn:active { transform: scale(0.98); }
+
+/* RESULT */
+.result-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--muted);
+  font-size: 13px;
+  gap: 8px;
+  text-align: center;
+}
+.result-empty .big { font-family: var(--font-display); font-size: 48px; opacity: 0.15; }
+
+.result-content { display: none; }
+.result-content.show { display: block; }
+
+.corridor-banner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.corridor-route {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.corridor-arrow { color: var(--accent); font-size: 18px; }
+.corridor-score-big {
+  font-family: var(--font-display);
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1;
+}
+.corridor-score-lbl { font-size: 11px; color: var(--muted); font-family: var(--font-mono); margin-top: 2px; }
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+.metric-cell {
+  background: var(--surface);
+  padding: 1rem 1.25rem;
+}
+.metric-cell-val {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.metric-cell-lbl {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+
+.dim-panel, .alt-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.dp-head {
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+.dp-body { padding: 1.25rem; }
+
+.alt-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.alt-row:last-child { border-bottom: none; }
+.alt-rank {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+.alt-rank.best { border-color: var(--accent); color: var(--accent); }
+.alt-name { flex: 1; font-size: 13px; font-weight: 500; }
+.alt-detail { font-size: 11px; color: var(--muted); }
+.alt-score {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* COMPARE PAGE */
+.compare-layout { padding: 1.5rem 2rem; }
+.compare-header { margin-bottom: 1.5rem; }
+.compare-selects {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.compare-selects .select-wrap { flex: 1; min-width: 160px; max-width: 200px; }
+.vs-badge {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.compare-btn {
+  padding: 10px 20px;
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.2s;
+}
+.compare-btn:hover { background: rgba(0,212,168,0.08); }
+
+.compare-table {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.ct-head {
+  display: grid;
+  padding: 1rem 1.5rem;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+.ct-row {
+  display: grid;
+  padding: 0.875rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  transition: background 0.15s;
+}
+.ct-row:last-child { border-bottom: none; }
+.ct-row:hover { background: rgba(255,255,255,0.02); }
+.ct-dim { font-size: 13px; font-weight: 500; }
+.ct-bar-wrap { display: flex; align-items: center; gap: 8px; }
+.ct-bar { flex: 1; height: 6px; background: rgba(255,255,255,0.05); border-radius: 99px; overflow: hidden; }
+.ct-fill { height: 100%; border-radius: 99px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+.ct-num { font-family: var(--font-mono); font-size: 12px; width: 28px; text-align: right; }
+
+.winner-tag {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-left: 6px;
+}
+
+/* TOOLTIP */
+.map-tooltip {
+  position: fixed;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  pointer-events: none;
+  display: none;
+  z-index: 200;
+  min-width: 180px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.tt-country { font-family: var(--font-display); font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.tt-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); gap: 16px; padding: 2px 0; }
+.tt-val { font-family: var(--font-mono); color: var(--text); }
+
+/* UTIL */
+.tag {
+  display: inline-block;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.page.active { animation: fadeIn 0.3s ease; }
+.result-content.show { animation: fadeIn 0.4s ease; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+@media (max-width: 900px) {
+  .map-layout { grid-template-columns: 1fr; grid-template-rows: 400px auto; }
+  .corridor-layout { grid-template-columns: 1fr; }
+  .metrics-grid { grid-template-columns: repeat(2,1fr); }
+  .two-col { grid-template-columns: 1fr; }
+  nav { padding: 0 1rem; }
+  .hero, .stat-strip, .map-layout, .corridor-layout, .compare-layout { padding-left: 1rem; padding-right: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    PayGuard
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('map')">Risk Map</button>
+    <button class="nav-tab" onclick="showPage('corridor')">Corridor Simulator</button>
+    <button class="nav-tab" onclick="showPage('compare')">Compare Countries</button>
+  </div>
+  <div class="nav-badge">PROTOTYPE v0.1</div>
+</nav>
+
+<div class="map-tooltip" id="tooltip"></div>
+
+<main>
+
+<!-- ═══ MAP PAGE ═══ -->
+<div class="page active" id="page-map">
+  <div class="hero">
+    <h1>Global <span>Risk</span> Intelligence</h1>
+    <div class="hero-sub">Hover any country to inspect · Click to pin</div>
+  </div>
+  <div class="stat-strip">
+    <div class="stat">
+      <div class="stat-val" style="color:var(--low)">61</div>
+      <div class="stat-lbl">Countries monitored</div>
+      <div class="stat-delta up">↑ 4 this quarter</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" style="color:var(--danger)">12</div>
+      <div class="stat-lbl">High-risk corridors</div>
+      <div class="stat-delta dn">↑ 3 flagged</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" style="color:var(--warn)">8</div>
+      <div class="stat-lbl">FATF grey list</div>
+      <div class="stat-delta up">— unchanged</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" style="color:var(--text)">3</div>
+      <div class="stat-lbl">Sanctions updated</div>
+      <div class="stat-delta dn">↑ this week</div>
+    </div>
+  </div>
+  <div class="map-layout">
+    <div class="map-card">
+      <div class="map-header">
+        <span class="map-title">Country Risk Score — Overall</span>
+        <div class="legend-row">
+          <span class="leg" style="background:#10b981"></span>Low
+          <span class="leg" style="background:#3b82f6"></span>Moderate
+          <span class="leg" style="background:#f59e0b"></span>Medium
+          <span class="leg" style="background:#f97316"></span>High
+          <span class="leg" style="background:#ef4444"></span>Critical
+          <span class="leg" style="background:#4b5563"></span>N/A
+        </div>
+      </div>
+      <div class="map-body">
+        <div id="world-svg" style="width:100%;height:100%;"></div>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="panel" style="flex:1">
+        <div class="panel-head">Country Detail</div>
+        <div class="panel-body" id="country-detail">
+          <div class="country-placeholder">
+            <div class="icon">🌍</div>
+            <div>Click a country on the map<br>to view its risk profile</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">Watchlist</div>
+        <div class="panel-body" style="padding:0.5rem 1.25rem">
+          <div id="watchlist"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CORRIDOR PAGE ═══ -->
+<div class="page" id="page-corridor">
+  <div class="hero">
+    <h1>Corridor <span>Simulator</span></h1>
+    <div class="hero-sub">Model risk across payment routes</div>
+  </div>
+  <div class="stat-strip">
+    <div class="stat">
+      <div class="stat-val">4,032</div>
+      <div class="stat-lbl">Active corridors</div>
+      <div class="stat-delta up">Global coverage</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" style="color:var(--warn)">2.4%</div>
+      <div class="stat-lbl">Avg. transfer cost</div>
+      <div class="stat-delta up">↓ 0.2% YoY</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" style="color:var(--low)">1.8 days</div>
+      <div class="stat-lbl">Avg. settlement</div>
+      <div class="stat-delta up">↓ improving</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">FATF 2025</div>
+      <div class="stat-lbl">Data vintage</div>
+      <div class="stat-delta up">Latest cycle</div>
+    </div>
+  </div>
+  <div class="corridor-layout">
+    <div class="panel" style="align-self:start">
+      <div class="panel-head">Configure Corridor</div>
+      <div class="panel-body">
+        <div class="form-group">
+          <label class="form-label">Origin Country</label>
+          <div class="select-wrap">
+            <select class="form-select" id="origin">
+              <option value="USA">🇺🇸 United States</option>
+              <option value="GBR">🇬🇧 United Kingdom</option>
+              <option value="DEU">🇩🇪 Germany</option>
+              <option value="SGP">🇸🇬 Singapore</option>
+              <option value="UAE">🇦🇪 UAE</option>
+              <option value="IND">🇮🇳 India</option>
+              <option value="BRA">🇧🇷 Brazil</option>
+              <option value="NGA">🇳🇬 Nigeria</option>
+              <option value="CHN">🇨🇳 China</option>
+              <option value="KEN">🇰🇪 Kenya</option>
+              <option value="MEX">🇲🇽 Mexico</option>
+              <option value="ZAF">🇿🇦 South Africa</option>
+              <option value="TUR">🇹🇷 Turkey</option>
+              <option value="PHL">🇵🇭 Philippines</option>
+              <option value="PAK">🇵🇰 Pakistan</option>
+            </select>
+          </div>
+        </div>
+        <div class="divider-arrow">→</div>
+        <div class="form-group">
+          <label class="form-label">Destination Country</label>
+          <div class="select-wrap">
+            <select class="form-select" id="destination">
+              <option value="MEX">🇲🇽 Mexico</option>
+              <option value="IND">🇮🇳 India</option>
+              <option value="PHL">🇵🇭 Philippines</option>
+              <option value="NGA">🇳🇬 Nigeria</option>
+              <option value="BRA">🇧🇷 Brazil</option>
+              <option value="CHN">🇨🇳 China</option>
+              <option value="PAK">🇵🇰 Pakistan</option>
+              <option value="KEN">🇰🇪 Kenya</option>
+              <option value="USA">🇺🇸 United States</option>
+              <option value="GBR">🇬🇧 United Kingdom</option>
+              <option value="DEU">🇩🇪 Germany</option>
+              <option value="SGP">🇸🇬 Singapore</option>
+              <option value="UAE">🇦🇪 UAE</option>
+              <option value="ZAF">🇿🇦 South Africa</option>
+              <option value="TUR">🇹🇷 Turkey</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Transfer Amount (USD)</label>
+          <input type="number" class="form-input" id="amount" value="10000" min="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Method</label>
+          <div class="select-wrap">
+            <select class="form-select" id="method">
+              <option value="swift">SWIFT Wire</option>
+              <option value="ripple">RippleNet</option>
+              <option value="sepa">SEPA (EUR zone)</option>
+              <option value="local">Local Rails</option>
+            </select>
+          </div>
+        </div>
+        <button class="analyze-btn" onclick="runCorridor()">Analyze Corridor →</button>
+      </div>
+    </div>
+    <div id="corridor-result">
+      <div class="result-empty">
+        <div class="big">→</div>
+        <div>Configure origin and destination<br>then click Analyze Corridor</div>
+      </div>
+      <div class="result-content" id="corridor-result-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ COMPARE PAGE ═══ -->
+<div class="page" id="page-compare">
+  <div class="hero">
+    <h1>Country <span>Comparison</span></h1>
+    <div class="hero-sub">Side-by-side risk analysis</div>
+  </div>
+  <div class="stat-strip" style="margin-bottom:0">
+    <div class="stat"><div class="stat-val">5</div><div class="stat-lbl">Risk dimensions</div></div>
+    <div class="stat"><div class="stat-val">FATF</div><div class="stat-lbl">AML source</div></div>
+    <div class="stat"><div class="stat-val">TI CPI</div><div class="stat-lbl">Corruption index</div></div>
+    <div class="stat"><div class="stat-val">BIS</div><div class="stat-lbl">Banking data</div></div>
+  </div>
+  <div class="compare-layout">
+    <div class="compare-selects">
+      <div class="select-wrap">
+        <select class="form-select" id="cmp-a">
+          <option value="USA">🇺🇸 United States</option>
+          <option value="GBR">🇬🇧 United Kingdom</option>
+          <option value="DEU">🇩🇪 Germany</option>
+          <option value="SGP">🇸🇬 Singapore</option>
+          <option value="UAE">🇦🇪 UAE</option>
+          <option value="IND">🇮🇳 India</option>
+          <option value="BRA">🇧🇷 Brazil</option>
+          <option value="NGA">🇳🇬 Nigeria</option>
+          <option value="CHN">🇨🇳 China</option>
+          <option value="MEX">🇲🇽 Mexico</option>
+        </select>
+      </div>
+      <div class="vs-badge">VS</div>
+      <div class="select-wrap">
+        <select class="form-select" id="cmp-b">
+          <option value="IND">🇮🇳 India</option>
+          <option value="USA">🇺🇸 United States</option>
+          <option value="GBR">🇬🇧 United Kingdom</option>
+          <option value="DEU">🇩🇪 Germany</option>
+          <option value="SGP">🇸🇬 Singapore</option>
+          <option value="UAE">🇦🇪 UAE</option>
+          <option value="BRA">🇧🇷 Brazil</option>
+          <option value="NGA">🇳🇬 Nigeria</option>
+          <option value="CHN">🇨🇳 China</option>
+          <option value="MEX">🇲🇽 Mexico</option>
+        </select>
+      </div>
+      <button class="compare-btn" onclick="runCompare()">Compare →</button>
+    </div>
+    <div id="compare-result"></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+/* ═══ DATA ═══ */
+const COUNTRIES = {
+  "840": { code:"USA", name:"United States",   flag:"🇺🇸", score:92, aml:90, fraud:88, reg:95, sanctions:95, corruption:88 },
+  "826": { code:"GBR", name:"United Kingdom",  flag:"🇬🇧", score:89, aml:91, fraud:85, reg:94, sanctions:92, corruption:82 },
+  "276": { code:"DEU", name:"Germany",          flag:"🇩🇪", score:88, aml:89, fraud:86, reg:93, sanctions:90, corruption:84 },
+  "702": { code:"SGP", name:"Singapore",        flag:"🇸🇬", score:91, aml:93, fraud:89, reg:95, sanctions:91, corruption:90 },
+  "392": { code:"JPN", name:"Japan",            flag:"🇯🇵", score:87, aml:88, fraud:85, reg:90, sanctions:89, corruption:85 },
+  "124": { code:"CAN", name:"Canada",           flag:"🇨🇦", score:90, aml:91, fraud:87, reg:93, sanctions:93, corruption:88 },
+  "36":  { code:"AUS", name:"Australia",        flag:"🇦🇺", score:88, aml:89, fraud:84, reg:91, sanctions:90, corruption:86 },
+  "250": { code:"FRA", name:"France",           flag:"🇫🇷", score:83, aml:84, fraud:80, reg:88, sanctions:85, corruption:80 },
+  "528": { code:"NLD", name:"Netherlands",      flag:"🇳🇱", score:85, aml:86, fraud:83, reg:89, sanctions:87, corruption:82 },
+  "752": { code:"SWE", name:"Sweden",           flag:"🇸🇪", score:89, aml:91, fraud:86, reg:92, sanctions:90, corruption:91 },
+  "380": { code:"ITA", name:"Italy",            flag:"🇮🇹", score:72, aml:70, fraud:68, reg:76, sanctions:78, corruption:58 },
+  "724": { code:"ESP", name:"Spain",            flag:"🇪🇸", score:74, aml:73, fraud:71, reg:78, sanctions:76, corruption:62 },
+  "356": { code:"IND", name:"India",            flag:"🇮🇳", score:63, aml:62, fraud:58, reg:68, sanctions:65, corruption:42 },
+  "076": { code:"BRA", name:"Brazil",           flag:"🇧🇷", score:55, aml:52, fraud:50, reg:60, sanctions:58, corruption:40 },
+  "156": { code:"CHN", name:"China",            flag:"🇨🇳", score:58, aml:55, fraud:60, reg:62, sanctions:54, corruption:45 },
+  "410": { code:"KOR", name:"South Korea",      flag:"🇰🇷", score:80, aml:81, fraud:78, reg:83, sanctions:79, corruption:64 },
+  "484": { code:"MEX", name:"Mexico",           flag:"🇲🇽", score:48, aml:45, fraud:42, reg:52, sanctions:50, corruption:34 },
+  "566": { code:"NGA", name:"Nigeria",          flag:"🇳🇬", score:28, aml:22, fraud:25, reg:32, sanctions:35, corruption:26 },
+  "710": { code:"ZAF", name:"South Africa",     flag:"🇿🇦", score:52, aml:50, fraud:48, reg:56, sanctions:55, corruption:40 },
+  "818": { code:"EGY", name:"Egypt",            flag:"🇪🇬", score:38, aml:35, fraud:36, reg:42, sanctions:40, corruption:35 },
+  "643": { code:"RUS", name:"Russia",           flag:"🇷🇺", score:15, aml:10, fraud:18, reg:20, sanctions:12, corruption:28 },
+  "364": { code:"IRN", name:"Iran",             flag:"🇮🇷", score:5,  aml:4,  fraud:8,  reg:6,  sanctions:3,  corruption:25 },
+  "408": { code:"PRK", name:"North Korea",      flag:"🇰🇵", score:2,  aml:2,  fraud:3,  reg:2,  sanctions:1,  corruption:10 },
+  "586": { code:"PAK", name:"Pakistan",         flag:"🇵🇰", score:32, aml:28, fraud:30, reg:36, sanctions:35, corruption:28 },
+  "608": { code:"PHL", name:"Philippines",      flag:"🇵🇭", score:54, aml:52, fraud:50, reg:58, sanctions:56, corruption:36 },
+  "360": { code:"IDN", name:"Indonesia",        flag:"🇮🇩", score:58, aml:56, fraud:54, reg:62, sanctions:60, corruption:37 },
+  "764": { code:"THA", name:"Thailand",         flag:"🇹🇭", score:60, aml:58, fraud:56, reg:64, sanctions:62, corruption:38 },
+  "104": { code:"MMR", name:"Myanmar",          flag:"🇲🇲", score:18, aml:14, fraud:16, reg:22, sanctions:20, corruption:20 },
+  "704": { code:"VNM", name:"Vietnam",          flag:"🇻🇳", score:52, aml:50, fraud:48, reg:56, sanctions:54, corruption:38 },
+  "404": { code:"KEN", name:"Kenya",            flag:"🇰🇪", score:48, aml:46, fraud:44, reg:52, sanctions:50, corruption:30 },
+  "800": { code:"UGA", name:"Uganda",           flag:"🇺🇬", score:36, aml:33, fraud:34, reg:40, sanctions:38, corruption:28 },
+  "288": { code:"GHA", name:"Ghana",            flag:"🇬🇭", score:50, aml:48, fraud:46, reg:54, sanctions:52, corruption:42 },
+  "504": { code:"MAR", name:"Morocco",          flag:"🇲🇦", score:48, aml:46, fraud:44, reg:52, sanctions:50, corruption:38 },
+  "434": { code:"LBY", name:"Libya",            flag:"🇱🇾", score:12, aml:10, fraud:12, reg:14, sanctions:12, corruption:18 },
+  "706": { code:"SOM", name:"Somalia",          flag:"🇸🇴", score:6,  aml:4,  fraud:6,  reg:8,  sanctions:6,  corruption:12 },
+  "862": { code:"VEN", name:"Venezuela",        flag:"🇻🇪", score:10, aml:8,  fraud:10, reg:12, sanctions:10, corruption:14 },
+  "170": { code:"COL", name:"Colombia",         flag:"🇨🇴", score:42, aml:38, fraud:40, reg:46, sanctions:44, corruption:36 },
+  "604": { code:"PER", name:"Peru",             flag:"🇵🇪", score:48, aml:46, fraud:44, reg:52, sanctions:50, corruption:38 },
+  "032": { code:"ARG", name:"Argentina",        flag:"🇦🇷", score:46, aml:43, fraud:44, reg:50, sanctions:48, corruption:38 },
+  "152": { code:"CHL", name:"Chile",            flag:"🇨🇱", score:68, aml:67, fraud:65, reg:72, sanctions:70, corruption:66 },
+  "682": { code:"SAU", name:"Saudi Arabia",     flag:"🇸🇦", score:56, aml:54, fraud:52, reg:60, sanctions:58, corruption:48 },
+  "784": { code:"UAE", name:"UAE",              flag:"🇦🇪", score:72, aml:70, fraud:68, reg:76, sanctions:74, corruption:66 },
+  "368": { code:"IRQ", name:"Iraq",             flag:"🇮🇶", score:16, aml:12, fraud:15, reg:18, sanctions:18, corruption:20 },
+  "760": { code:"SYR", name:"Syria",            flag:"🇸🇾", score:4,  aml:3,  fraud:4,  reg:5,  sanctions:4,  corruption:14 },
+  "792": { code:"TUR", name:"Turkey",           flag:"🇹🇷", score:50, aml:47, fraud:48, reg:54, sanctions:52, corruption:36 },
+  "804": { code:"UKR", name:"Ukraine",          flag:"🇺🇦", score:38, aml:34, fraud:36, reg:42, sanctions:40, corruption:33 },
+  "616": { code:"POL", name:"Poland",           flag:"🇵🇱", score:75, aml:74, fraud:72, reg:78, sanctions:76, corruption:62 },
+  "348": { code:"HUN", name:"Hungary",          flag:"🇭🇺", score:62, aml:60, fraud:58, reg:65, sanctions:64, corruption:50 },
+  "642": { code:"ROU", name:"Romania",          flag:"🇷🇴", score:56, aml:54, fraud:52, reg:60, sanctions:58, corruption:44 },
+  "246": { code:"FIN", name:"Finland",          flag:"🇫🇮", score:92, aml:93, fraud:90, reg:94, sanctions:92, corruption:94 },
+  "578": { code:"NOR", name:"Norway",           flag:"🇳🇴", score:91, aml:92, fraud:89, reg:93, sanctions:91, corruption:92 },
+  "208": { code:"DNK", name:"Denmark",          flag:"🇩🇰", score:90, aml:91, fraud:88, reg:92, sanctions:90, corruption:93 },
+  "756": { code:"CHE", name:"Switzerland",      flag:"🇨🇭", score:82, aml:83, fraud:80, reg:86, sanctions:83, corruption:86 },
+  "040": { code:"AUT", name:"Austria",          flag:"🇦🇹", score:80, aml:80, fraud:78, reg:83, sanctions:80, corruption:76 },
+  "056": { code:"BEL", name:"Belgium",          flag:"🇧🇪", score:78, aml:78, fraud:76, reg:81, sanctions:79, corruption:74 },
+  "620": { code:"PRT", name:"Portugal",         flag:"🇵🇹", score:76, aml:75, fraud:73, reg:79, sanctions:77, corruption:68 },
+  "300": { code:"GRC", name:"Greece",           flag:"🇬🇷", score:62, aml:60, fraud:58, reg:65, sanctions:64, corruption:50 },
+  "050": { code:"BGD", name:"Bangladesh",       flag:"🇧🇩", score:44, aml:42, fraud:40, reg:48, sanctions:46, corruption:28 },
+  "116": { code:"KHM", name:"Cambodia",         flag:"🇰🇭", score:30, aml:26, fraud:28, reg:34, sanctions:33, corruption:22 },
+  "788": { code:"TUN", name:"Tunisia",          flag:"🇹🇳", score:44, aml:42, fraud:40, reg:48, sanctions:46, corruption:40 },
+};
+
+const SIM_COUNTRIES = {};
+Object.values(COUNTRIES).forEach(c => { SIM_COUNTRIES[c.code] = c; });
+
+const CORRIDORS = {
+  "USA-IND": { cost:2.1, speed:"1–2 days", via:["Citibank","HDFC"], compliance:88 },
+  "USA-MEX": { cost:3.5, speed:"Same day", via:["Wells Fargo","Banorte"], compliance:72 },
+  "USA-PHL": { cost:2.8, speed:"1–2 days", via:["JPMorgan","BDO"], compliance:76 },
+  "USA-NGA": { cost:5.2, speed:"2–3 days", via:["Citibank","GTBank"], compliance:52 },
+  "USA-BRA": { cost:4.1, speed:"1–2 days", via:["Citi","Bradesco"], compliance:65 },
+  "USA-CHN": { cost:3.8, speed:"2 days",   via:["JPMorgan","ICBC"], compliance:70 },
+  "USA-PAK": { cost:4.9, speed:"2–3 days", via:["Habib Bank","MCB"], compliance:48 },
+  "USA-KEN": { cost:4.5, speed:"1–2 days", via:["Equity Bank","KCB"], compliance:60 },
+  "GBR-IND": { cost:1.8, speed:"1 day",    via:["Barclays","SBI"], compliance:90 },
+  "GBR-NGA": { cost:4.8, speed:"2–3 days", via:["Lloyds","Access Bank"], compliance:55 },
+  "GBR-PAK": { cost:3.9, speed:"1–2 days", via:["HSBC","HBL"], compliance:62 },
+  "GBR-MEX": { cost:4.2, speed:"2 days",   via:["HSBC","BBVA"], compliance:68 },
+  "GBR-CHN": { cost:3.2, speed:"1–2 days", via:["HSBC","BOC"], compliance:72 },
+  "GBR-KEN": { cost:4.0, speed:"1–2 days", via:["Barclays Africa","KCB"], compliance:64 },
+  "GBR-PHL": { cost:3.0, speed:"1 day",    via:["HSBC","BPI"], compliance:78 },
+  "SGP-IND": { cost:1.5, speed:"Same day", via:["DBS","Axis Bank"], compliance:93 },
+  "SGP-PHL": { cost:1.2, speed:"Same day", via:["OCBC","BPI"], compliance:90 },
+  "SGP-CHN": { cost:2.0, speed:"Same day", via:["DBS","ICBC"], compliance:84 },
+  "SGP-NGA": { cost:5.8, speed:"3 days",   via:["DBS","GTBank"], compliance:48 },
+  "UAE-IND": { cost:1.8, speed:"Same day", via:["ENBD","SBI UAE"], compliance:85 },
+  "UAE-PAK": { cost:2.2, speed:"Same day", via:["ADCB","HBL UAE"], compliance:72 },
+  "UAE-PHL": { cost:2.5, speed:"1 day",    via:["ENBD","BDO"], compliance:78 },
+  "DEU-IND": { cost:2.0, speed:"1–2 days", via:["Deutsche Bank","ICICI"], compliance:87 },
+  "DEU-CHN": { cost:3.0, speed:"1–2 days", via:["Deutsche","Bank of China"], compliance:74 },
+};
+
+function getCorr(a, b) {
+  return CORRIDORS[`${a}-${b}`] || CORRIDORS[`${b}-${a}`] || null;
+}
+
+function getRisk(score) {
+  if (score >= 80) return { label:"Very Low", color:"#10b981", bg:"rgba(16,185,129,0.12)", text:"#34d399" };
+  if (score >= 60) return { label:"Low",      color:"#3b82f6", bg:"rgba(59,130,246,0.12)", text:"#60a5fa" };
+  if (score >= 40) return { label:"Medium",   color:"#f59e0b", bg:"rgba(245,158,11,0.12)", text:"#fbbf24" };
+  if (score >= 20) return { label:"High",     color:"#f97316", bg:"rgba(249,115,22,0.12)", text:"#fb923c" };
+  return              { label:"Critical",  color:"#ef4444", bg:"rgba(239,68,68,0.12)",  text:"#f87171" };
+}
+
+function mapColor(score) {
+  if (!score) return "#374151";
+  if (score >= 80) return "#059669";
+  if (score >= 60) return "#2563eb";
+  if (score >= 40) return "#d97706";
+  if (score >= 20) return "#ea580c";
+  return "#dc2626";
+}
+
+/* ═══ MAP ═══ */
+let pinnedCountry = null;
+
+function buildMap() {
+  const container = document.getElementById('world-svg');
+  const w = container.clientWidth || 700;
+  const h = container.clientHeight || 400;
+  const svg = d3.select('#world-svg').append('svg')
+    .attr('width','100%').attr('height','100%')
+    .attr('viewBox',`0 0 ${w} ${h}`);
+
+  const proj = d3.geoNaturalEarth1().scale(w/6.2).translate([w/2, h/2]);
+  const path = d3.geoPath(proj);
+  const tooltip = document.getElementById('tooltip');
+
+  d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(world => {
+    const features = topojson.feature(world, world.objects.countries).features;
+    svg.selectAll('path').data(features).join('path')
+      .attr('d', path)
+      .attr('fill', d => {
+        const c = COUNTRIES[String(d.id).padStart(3,'0')];
+        return mapColor(c?.score);
+      })
+      .attr('stroke','rgba(255,255,255,0.1)')
+      .attr('stroke-width', 0.5)
+      .style('cursor','pointer')
+      .on('mousemove', function(event, d) {
+        const c = COUNTRIES[String(d.id).padStart(3,'0')];
+        if (!c) return;
+        const r = getRisk(c.score);
+        tooltip.style.display = 'block';
+        tooltip.style.left = (event.clientX + 14) + 'px';
+        tooltip.style.top  = (event.clientY - 10) + 'px';
+        tooltip.innerHTML = `
+          <div class="tt-country">${c.flag} ${c.name}</div>
+          <div style="margin-bottom:6px">
+            <span class="tag" style="background:${r.bg};color:${r.text}">${r.label} Risk — ${c.score}/100</span>
+          </div>
+          <div class="tt-row"><span>AML compliance</span><span class="tt-val">${c.aml}</span></div>
+          <div class="tt-row"><span>Fraud risk score</span><span class="tt-val">${c.fraud}</span></div>
+          <div class="tt-row"><span>Regulatory quality</span><span class="tt-val">${c.reg}</span></div>
+          <div class="tt-row"><span>Sanctions exposure</span><span class="tt-val">${c.sanctions}</span></div>
+          <div class="tt-row"><span>Corruption index</span><span class="tt-val">${c.corruption}</span></div>
+        `;
+      })
+      .on('mouseleave', () => { tooltip.style.display = 'none'; })
+      .on('click', (event, d) => {
+        const c = COUNTRIES[String(d.id).padStart(3,'0')];
+        if (c) showCountryDetail(c);
+        svg.selectAll('path').attr('stroke','rgba(255,255,255,0.1)').attr('stroke-width',0.5);
+        d3.select(event.currentTarget).attr('stroke','#00d4a8').attr('stroke-width',1.5);
+      });
+  });
+}
+
+function showCountryDetail(c) {
+  const r = getRisk(c.score);
+  const dims = [
+    { name:'AML', val:c.aml, color:'#3b82f6' },
+    { name:'Fraud',val:c.fraud, color:'#f59e0b' },
+    { name:'Regulatory',val:c.reg, color:'#10b981' },
+    { name:'Sanctions',val:c.sanctions, color:'#ef4444' },
+    { name:'Corruption',val:c.corruption, color:'#a855f7' },
+  ];
+  document.getElementById('country-detail').innerHTML = `
+    <div style="text-align:center;margin-bottom:1rem">
+      <div style="font-size:36px;margin-bottom:6px">${c.flag}</div>
+      <div class="country-name">${c.name}</div>
+      <span class="risk-badge" style="background:${r.bg};color:${r.text}">${r.label} Risk</span>
+      <div style="font-family:var(--font-display);font-size:42px;font-weight:800;letter-spacing:-2px;color:${r.color};line-height:1">${c.score}</div>
+      <div style="font-size:11px;color:var(--muted);font-family:var(--font-mono)">Overall Score / 100</div>
+    </div>
+    <div style="border-top:1px solid var(--border);padding-top:1rem">
+      ${dims.map(d=>`
+        <div class="dim-row">
+          <span class="dim-name">${d.name}</span>
+          <div class="dim-bar"><div class="dim-fill" style="width:${d.val}%;background:${d.color}"></div></div>
+          <span class="dim-val" style="color:${d.color}">${d.val}</span>
+        </div>
+      `).join('')}
+    </div>
+    <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
+      <button class="analyze-btn" style="font-size:13px;padding:9px" onclick="showPage('corridor');document.getElementById('origin').value='${c.code}';document.getElementById('destination').value='MEX'">
+        Simulate corridor from ${c.name} →
+      </button>
+    </div>
+  `;
+}
+
+function buildWatchlist() {
+  const watch = Object.values(COUNTRIES)
+    .sort((a,b) => a.score - b.score)
+    .slice(0, 6);
+  document.getElementById('watchlist').innerHTML = watch.map(c => {
+    const r = getRisk(c.score);
+    return `<div class="watch-item" onclick="showPage('compare');document.getElementById('cmp-b').value='${c.code}'">
+      <div><span class="watch-flag">${c.flag}</span><span class="watch-name">${c.name}</span></div>
+      <span class="watch-score" style="color:${r.color}">${c.score}</span>
+    </div>`;
+  }).join('');
+}
+
+/* ═══ CORRIDOR ═══ */
+function runCorridor() {
+  const origCode = document.getElementById('origin').value;
+  const destCode = document.getElementById('destination').value;
+  const amount   = parseFloat(document.getElementById('amount').value) || 10000;
+  const method   = document.getElementById('method').value;
+
+  if (origCode === destCode) {
+    alert('Please select two different countries.');
+    return;
+  }
+
+  const orig = SIM_COUNTRIES[origCode];
+  const dest = SIM_COUNTRIES[destCode];
+  if (!orig || !dest) return;
+
+  const corr = getCorr(origCode, destCode);
+  const cost = corr ? corr.cost : (6 + Math.random() * 2).toFixed(1)*1;
+  const speed = corr ? corr.speed : '3–5 days';
+  const via = corr ? corr.via : ['Correspondent bank', 'Local bank'];
+  const compliance = corr ? corr.compliance : Math.round((orig.score + dest.score) / 2);
+  const overallScore = Math.round(compliance * 0.4 + ((orig.score + dest.score)/2) * 0.6);
+  const r = getRisk(overallScore);
+  const fee = (amount * cost / 100).toFixed(2);
+  const methodMult = { swift:1, ripple:0.6, sepa:0.4, local:1.1 };
+  const actualFee = (fee * (methodMult[method]||1)).toFixed(2);
+  const methodLabels = { swift:'SWIFT GPI', ripple:'RippleNet', sepa:'SEPA', local:'Local Rails' };
+
+  const dims = [
+    { name:'AML compliance',   val:Math.round((orig.aml+dest.aml)/2),      color:'#3b82f6' },
+    { name:'Fraud exposure',   val:Math.round((orig.fraud+dest.fraud)/2),   color:'#f59e0b' },
+    { name:'Regulatory fit',   val:Math.round((orig.reg+dest.reg)/2),       color:'#10b981' },
+    { name:'Sanctions risk',   val:Math.round((orig.sanctions+dest.sanctions)/2), color:'#ef4444' },
+  ];
+
+  const alts = [
+    { rank:1, best:true,  name:'SWIFT GPI',   speed:'1–2 days',  cost:(cost*1.0).toFixed(2), score:Math.min(overallScore+8,99) },
+    { rank:2, best:false, name:'RippleNet',   speed:'Minutes',   cost:(cost*0.6).toFixed(2), score:Math.min(overallScore+4,99) },
+    { rank:3, best:false, name:'Local Rails', speed:speed,       cost:(cost*1.1).toFixed(2), score:Math.max(overallScore-6,10) },
+    { rank:4, best:false, name:'FX + Wire',   speed:'2–3 days',  cost:(cost*1.35).toFixed(2),score:Math.max(overallScore-3,10) },
+  ];
+
+  const html = `
+    <div class="corridor-banner">
+      <div>
+        <div class="corridor-route">
+          <span>${orig.flag} ${orig.name}</span>
+          <span class="corridor-arrow">→</span>
+          <span>${dest.flag} ${dest.name}</span>
+        </div>
+        <div style="margin-top:6px;display:flex;gap:8px;align-items:center">
+          <span class="tag" style="background:${r.bg};color:${r.text}">${r.label} Risk</span>
+          <span style="font-size:12px;color:var(--muted);font-family:var(--font-mono)">via ${via.join(' → ')}</span>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div class="corridor-score-big" style="color:${r.color}">${overallScore}</div>
+        <div class="corridor-score-lbl">Corridor score / 100</div>
+      </div>
+    </div>
+    <div class="metrics-grid">
+      <div class="metric-cell">
+        <div class="metric-cell-val" style="color:var(--warn)">${cost.toFixed(1)}%</div>
+        <div class="metric-cell-lbl">Transfer cost</div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-cell-val" style="color:var(--low)">$${Number(actualFee).toLocaleString()}</div>
+        <div class="metric-cell-lbl">Fee on $${Number(amount).toLocaleString()}</div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-cell-val">${speed}</div>
+        <div class="metric-cell-lbl">Settlement time</div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-cell-val" style="color:${r.color}">${compliance}</div>
+        <div class="metric-cell-lbl">Compliance score</div>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="dim-panel">
+        <div class="dp-head">Risk Breakdown</div>
+        <div class="dp-body">
+          ${dims.map(d=>`
+            <div class="dim-row">
+              <span class="dim-name">${d.name}</span>
+              <div class="dim-bar"><div class="dim-fill" style="width:${d.val}%;background:${d.color}"></div></div>
+              <span class="dim-val" style="color:${d.color}">${d.val}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div class="alt-panel">
+        <div class="dp-head">Routing Alternatives</div>
+        <div class="dp-body" style="padding:0.875rem 1.25rem">
+          ${alts.map(a=>{
+            const ar = getRisk(a.score);
+            return `<div class="alt-row">
+              <div class="alt-rank ${a.best?'best':''}">${a.rank}</div>
+              <div>
+                <div class="alt-name">${a.name}</div>
+                <div class="alt-detail">${a.speed} · ${a.cost}% fee</div>
+              </div>
+              <span class="alt-score" style="background:${ar.bg};color:${ar.text}">${a.score}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+
+  const content = document.getElementById('corridor-result-content');
+  content.innerHTML = html;
+  content.classList.add('show');
+  document.querySelector('#corridor-result .result-empty').style.display = 'none';
+}
+
+/* ═══ COMPARE ═══ */
+function runCompare() {
+  const codeA = document.getElementById('cmp-a').value;
+  const codeB = document.getElementById('cmp-b').value;
+  if (codeA === codeB) { alert('Please select two different countries.'); return; }
+  const a = SIM_COUNTRIES[codeA];
+  const b = SIM_COUNTRIES[codeB];
+  if (!a || !b) return;
+
+  const dims = [
+    { name:'Overall Score',   va:a.score,      vb:b.score },
+    { name:'AML Compliance',  va:a.aml,        vb:b.aml },
+    { name:'Fraud Risk',      va:a.fraud,      vb:b.fraud },
+    { name:'Regulatory',      va:a.reg,        vb:b.reg },
+    { name:'Sanctions',       va:a.sanctions,  vb:b.sanctions },
+    { name:'Corruption',      va:a.corruption, vb:b.corruption },
+  ];
+
+  const rA = getRisk(a.score), rB = getRisk(b.score);
+  const aWins = dims.filter(d=>d.va>d.vb).length;
+  const bWins = dims.filter(d=>d.vb>d.va).length;
+
+  document.getElementById('compare-result').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;text-align:center">
+        <div style="font-size:40px;margin-bottom:6px">${a.flag}</div>
+        <div style="font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:-0.5px">${a.name}</div>
+        <div style="font-family:var(--font-display);font-size:42px;font-weight:800;letter-spacing:-2px;color:${rA.color};line-height:1.1">${a.score}</div>
+        <span class="tag" style="background:${rA.bg};color:${rA.text}">${rA.label} Risk</span>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted);font-family:var(--font-mono)">${aWins} dimensions ahead</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;text-align:center">
+        <div style="font-size:40px;margin-bottom:6px">${b.flag}</div>
+        <div style="font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:-0.5px">${b.name}</div>
+        <div style="font-family:var(--font-display);font-size:42px;font-weight:800;letter-spacing:-2px;color:${rB.color};line-height:1.1">${b.score}</div>
+        <span class="tag" style="background:${rB.bg};color:${rB.text}">${rB.label} Risk</span>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted);font-family:var(--font-mono)">${bWins} dimensions ahead</div>
+      </div>
+    </div>
+    <div class="compare-table">
+      <div class="ct-head" style="grid-template-columns:180px 1fr 1fr">
+        <span>Dimension</span>
+        <span>${a.flag} ${a.name}</span>
+        <span>${b.flag} ${b.name}</span>
+      </div>
+      ${dims.map(d=>{
+        const aWin = d.va >= d.vb;
+        const bWin = d.vb > d.va;
+        return `<div class="ct-row" style="grid-template-columns:180px 1fr 1fr">
+          <span class="ct-dim">${d.name}</span>
+          <div class="ct-bar-wrap">
+            <div class="ct-bar"><div class="ct-fill" style="width:${d.va}%;background:${aWin?'#00d4a8':'#3b82f6'}"></div></div>
+            <span class="ct-num" style="color:${aWin?'#00d4a8':'#6b7280'}">${d.va}${aWin&&d.va!==d.vb?'<span class="winner-tag" style="background:rgba(0,212,168,0.12);color:#00d4a8">▲</span>':''}</span>
+          </div>
+          <div class="ct-bar-wrap">
+            <div class="ct-bar"><div class="ct-fill" style="width:${d.vb}%;background:${bWin?'#00d4a8':'#3b82f6'}"></div></div>
+            <span class="ct-num" style="color:${bWin?'#00d4a8':'#6b7280'}">${d.vb}${bWin?'<span class="winner-tag" style="background:rgba(0,212,168,0.12);color:#00d4a8">▲</span>':''}</span>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-family:var(--font-mono);margin-bottom:8px">Summary</div>
+      <div style="font-size:14px;line-height:1.7;color:var(--text)">
+        ${a.score > b.score
+          ? `<strong style="color:#00d4a8">${a.name}</strong> presents lower overall payment risk (${a.score} vs ${b.score}). Key advantage: ${dims.filter(d=>d.va>d.vb).map(d=>d.name).slice(0,2).join(', ')}. For cross-border corridors through ${b.name}, enhanced due diligence is recommended.`
+          : a.score < b.score
+          ? `<strong style="color:#00d4a8">${b.name}</strong> presents lower overall payment risk (${b.score} vs ${a.score}). Key advantage: ${dims.filter(d=>d.vb>d.va).map(d=>d.name).slice(0,2).join(', ')}. For cross-border corridors through ${a.name}, enhanced due diligence is recommended.`
+          : `Both countries have equivalent overall risk scores (${a.score}). Review individual dimensions for specific corridor decisions.`
+        }
+      </div>
+    </div>
+  `;
+}
+
+/* ═══ NAV ═══ */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + id));
+  document.querySelectorAll('.nav-tab').forEach((t,i) => {
+    t.classList.toggle('active', ['map','corridor','compare'][i] === id);
+  });
+}
+
+/* ═══ INIT ═══ */
+buildMap();
+buildWatchlist();
+</script>
+</body>
+</html>

@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NestForge — Design Your Room</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #f7f3ec;
+  --cream2: #ede8df;
+  --cream3: #e0d9cc;
+  --sand: #c8b89a;
+  --clay: #b87355;
+  --clay-d: #8a4e35;
+  --sage: #7a9e7e;
+  --sage-d: #4a6b4e;
+  --ink: #1e1c18;
+  --ink2: #3a3730;
+  --ink3: #6b6760;
+  --white: #fdfaf5;
+  --gold: #c9a84c;
+  --r: 'Cormorant Garamond', serif;
+  --s: 'Outfit', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--s);background:var(--cream);color:var(--ink);min-height:100vh;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 3rem;
+  background:rgba(247,243,236,0.94);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--cream3);
+}
+.logo{font-family:var(--r);font-size:1.7rem;color:var(--ink);letter-spacing:-0.5px;cursor:pointer;}
+.logo b{color:var(--clay);}
+.nav-tabs{display:flex;gap:4px;}
+.nav-tab{
+  padding:0.45rem 1rem;border-radius:2rem;font-size:0.82rem;font-weight:400;
+  color:var(--ink3);cursor:pointer;border:none;background:transparent;
+  font-family:var(--s);transition:all 0.2s;
+}
+.nav-tab:hover,.nav-tab.active{background:var(--ink);color:var(--white);}
+.nav-right{display:flex;align-items:center;gap:1rem;}
+.nav-btn{
+  background:var(--clay);color:var(--white);border:none;
+  padding:0.5rem 1.4rem;border-radius:2rem;font-size:0.82rem;
+  font-weight:500;font-family:var(--s);cursor:pointer;transition:background 0.2s;
+}
+.nav-btn:hover{background:var(--clay-d);}
+
+/* PAGES */
+.page{display:none;padding-top:64px;}
+.page.active{display:block;}
+
+/* ===== HOME PAGE ===== */
+.home-hero{
+  min-height:calc(100vh - 64px);
+  display:grid;grid-template-columns:1fr 1fr;
+}
+.hero-l{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:5rem 3rem 5rem 5rem;
+}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--cream2);color:var(--ink2);
+  padding:0.4rem 1rem;border-radius:2rem;
+  font-size:0.75rem;font-weight:500;letter-spacing:0.5px;
+  margin-bottom:1.8rem;width:fit-content;border:1px solid var(--cream3);
+}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--sage);}
+.hero-l h1{
+  font-family:var(--r);font-size:4.5rem;line-height:1.05;
+  color:var(--ink);margin-bottom:1.4rem;letter-spacing:-1px;
+}
+.hero-l h1 i{color:var(--clay);}
+.hero-l p{
+  font-size:1rem;color:var(--ink3);line-height:1.75;
+  font-weight:300;max-width:420px;margin-bottom:2.5rem;
+}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn-main{
+  background:var(--ink);color:var(--white);
+  padding:0.85rem 2rem;border-radius:2rem;
+  font-size:0.9rem;font-weight:500;font-family:var(--s);
+  border:none;cursor:pointer;transition:all 0.2s;
+}
+.btn-main:hover{background:var(--clay);transform:translateY(-1px);}
+.btn-out{
+  background:transparent;color:var(--ink);
+  padding:0.85rem 2rem;border-radius:2rem;
+  font-size:0.9rem;font-weight:400;font-family:var(--s);
+  border:1.5px solid var(--cream3);cursor:pointer;transition:all 0.2s;
+}
+.btn-out:hover{border-color:var(--ink);}
+.hero-nums{
+  display:flex;gap:2.5rem;margin-top:3rem;
+  padding-top:2.5rem;border-top:1px solid var(--cream3);
+}
+.hnum span{font-family:var(--r);font-size:2rem;display:block;color:var(--ink);}
+.hnum small{font-size:0.78rem;color:var(--ink3);font-weight:300;}
+
+.hero-r{
+  background:var(--cream2);display:flex;align-items:center;
+  justify-content:center;position:relative;overflow:hidden;padding:3rem;
+}
+.hero-r-deco{
+  position:absolute;width:400px;height:400px;border-radius:50%;
+  background:var(--cream3);top:-100px;right:-100px;
+}
+.hero-r-deco2{
+  position:absolute;width:200px;height:200px;border-radius:50%;
+  background:rgba(184,115,85,0.1);bottom:10%;left:5%;
+}
+.preview-window{
+  width:100%;max-width:420px;background:var(--white);
+  border-radius:20px;box-shadow:0 24px 60px rgba(30,28,24,0.12);
+  position:relative;z-index:2;overflow:hidden;
+}
+.pw-bar{
+  background:var(--ink);padding:0.9rem 1.2rem;
+  display:flex;align-items:center;gap:8px;
+}
+.pw-dot{width:10px;height:10px;border-radius:50%;}
+.pw-dot.r{background:#e05c5c;}
+.pw-dot.y{background:#e0b05c;}
+.pw-dot.g{background:var(--sage);}
+.pw-title{margin-left:auto;margin-right:auto;font-size:0.78rem;color:rgba(255,255,255,0.5);}
+.pw-body{padding:1.4rem;}
+.pw-room{
+  border-radius:12px;background:linear-gradient(160deg,#ddd8cf 0%,#cac4b8 100%);
+  height:210px;position:relative;overflow:hidden;margin-bottom:1rem;
+}
+/* Room scene */
+.scene{width:100%;height:100%;position:relative;}
+.s-wall{position:absolute;inset:0;background:linear-gradient(180deg,#d8d3c9 0%,#ccc6ba 100%);}
+.s-floor{position:absolute;bottom:0;left:0;right:0;height:38%;background:linear-gradient(180deg,#b8a898 0%,#a89888 100%);border-radius:0 0 12px 12px;}
+.s-rug{position:absolute;bottom:28%;left:50%;transform:translateX(-50%);width:160px;height:45px;background:rgba(120,90,70,0.35);border-radius:6px;}
+.s-sofa{
+  position:absolute;bottom:34%;left:50%;transform:translateX(-50%);
+  width:150px;height:52px;background:#c4b8a8;border-radius:12px 12px 4px 4px;
+}
+.s-sofa::before{content:'';position:absolute;top:0;left:8px;right:8px;height:20px;background:#b4a898;border-radius:8px 8px 0 0;transform:translateY(-100%);}
+.s-sofa::after{content:'';position:absolute;top:5px;left:5px;right:5px;bottom:5px;background:rgba(255,255,255,0.08);border-radius:8px;}
+.s-cushion{position:absolute;bottom:calc(34% + 16px);left:calc(50% - 30px);width:20px;height:14px;background:var(--clay);border-radius:4px;opacity:0.8;}
+.s-cushion2{position:absolute;bottom:calc(34% + 16px);left:calc(50% + 8px);width:20px;height:14px;background:#a08868;border-radius:4px;opacity:0.8;}
+.s-table{position:absolute;bottom:24%;left:50%;transform:translateX(-50%);width:65px;height:26px;background:#8a7a68;border-radius:6px;}
+.s-table::before{content:'';position:absolute;top:100%;left:12px;width:3px;height:12px;background:#7a6a58;}
+.s-table::after{content:'';position:absolute;top:100%;right:12px;width:3px;height:12px;background:#7a6a58;}
+.s-lamp{position:absolute;bottom:38%;right:16%;display:flex;flex-direction:column;align-items:center;}
+.s-lampshade{width:22px;height:16px;background:#d4c8a8;border-radius:2px 2px 6px 6px;clip-path:polygon(15% 0%,85% 0%,100% 100%,0% 100%);}
+.s-lampbase{width:2px;height:28px;background:#9a8a78;}
+.s-lampfoot{width:14px;height:3px;background:#9a8a78;border-radius:2px;}
+.s-plant{position:absolute;bottom:38%;left:12%;}
+.s-pot{width:18px;height:16px;background:var(--clay);border-radius:3px 3px 5px 5px;margin:0 auto;opacity:0.85;}
+.s-stem{width:2px;height:22px;background:var(--sage);margin:0 auto;}
+.s-leaf{width:22px;height:14px;background:var(--sage);border-radius:50% 50% 50% 0;margin:0 auto;transform:rotate(-15deg);}
+.s-leaf2{width:18px;height:12px;background:var(--sage-d);border-radius:0 50% 50% 50%;margin:0 auto;transform:rotate(20deg);margin-top:-8px;}
+.s-shelf{position:absolute;top:18%;right:14%;width:60px;height:5px;background:#9a8a78;}
+.s-shelf::before{content:'';position:absolute;top:5px;right:2px;width:2px;height:30px;background:#8a7a68;}
+.s-obj1{position:absolute;top:8%;right:16%;width:12px;height:16px;background:#a89888;border-radius:2px 2px 0 0;}
+.s-obj2{position:absolute;top:6%;right:26%;width:8px;height:20px;background:#c4b0a0;border-radius:1px 1px 0 0;}
+.scene-label{position:absolute;top:10px;left:12px;background:rgba(253,250,245,0.9);padding:4px 10px;border-radius:1rem;font-size:0.7rem;font-weight:500;color:var(--ink);}
+.scene-eco{position:absolute;top:10px;right:12px;background:rgba(122,158,126,0.85);padding:4px 10px;border-radius:1rem;font-size:0.7rem;font-weight:500;color:#fff;}
+
+.pw-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
+.pw-chip{
+  padding:5px 12px;border-radius:2rem;font-size:0.72rem;font-weight:500;
+  border:1px solid var(--cream3);color:var(--ink3);cursor:pointer;transition:all 0.2s;
+  font-family:var(--s);
+}
+.pw-chip.on{background:var(--ink);color:var(--white);border-color:var(--ink);}
+.pw-chip:hover:not(.on){border-color:var(--ink2);}
+.pw-action{
+  width:100%;background:var(--clay);color:var(--white);border:none;
+  padding:0.8rem;border-radius:1rem;font-size:0.88rem;font-weight:500;
+  font-family:var(--s);cursor:pointer;transition:background 0.2s;
+}
+.pw-action:hover{background:var(--clay-d);}
+
+/* ===== DESIGNER PAGE ===== */
+.designer{
+  display:grid;grid-template-columns:360px 1fr;
+  min-height:calc(100vh - 64px);
+}
+
+/* SIDEBAR */
+.sidebar{
+  background:var(--white);border-right:1px solid var(--cream3);
+  overflow-y:auto;padding:2rem 1.5rem;
+  display:flex;flex-direction:column;gap:0;
+}
+.sb-section{margin-bottom:2rem;}
+.sb-title{
+  font-family:var(--r);font-size:1rem;font-weight:600;
+  color:var(--ink);margin-bottom:1rem;
+  display:flex;align-items:center;gap:8px;
+}
+.sb-step{
+  width:22px;height:22px;border-radius:50%;background:var(--ink);
+  color:var(--white);font-size:0.68rem;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--s);
+}
+.sb-label{font-size:0.75rem;color:var(--ink3);margin-bottom:0.4rem;font-weight:400;}
+.sb-input{
+  width:100%;padding:0.6rem 0.9rem;border:1.5px solid var(--cream3);
+  border-radius:10px;font-size:0.85rem;font-family:var(--s);
+  background:var(--cream);color:var(--ink);outline:none;transition:border 0.2s;
+}
+.sb-input:focus{border-color:var(--clay);}
+.sb-row{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.8rem;}
+.sb-full{margin-bottom:0.8rem;}
+.chip-group{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0.8rem;}
+.chip{
+  padding:5px 12px;border-radius:2rem;font-size:0.75rem;font-weight:500;
+  border:1.5px solid var(--cream3);color:var(--ink3);cursor:pointer;
+  transition:all 0.2s;font-family:var(--s);
+}
+.chip.sel{background:var(--ink);color:var(--white);border-color:var(--ink);}
+.chip:hover:not(.sel){border-color:var(--ink2);color:var(--ink);}
+.color-swatches{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0.8rem;}
+.swatch{
+  width:32px;height:32px;border-radius:50%;cursor:pointer;
+  border:2.5px solid transparent;transition:all 0.2s;
+}
+.swatch.sel{border-color:var(--ink);transform:scale(1.12);}
+.sb-range{width:100%;accent-color:var(--clay);margin:0.3rem 0 0.2rem;}
+.sb-range-labels{display:flex;justify-content:space-between;font-size:0.72rem;color:var(--ink3);}
+.sb-divider{height:1px;background:var(--cream3);margin:1.2rem 0;}
+.generate-btn{
+  width:100%;background:var(--clay);color:var(--white);border:none;
+  padding:1rem;border-radius:14px;font-size:0.95rem;font-weight:600;
+  font-family:var(--s);cursor:pointer;transition:all 0.25s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:0.5rem;
+}
+.generate-btn:hover{background:var(--clay-d);transform:translateY(-1px);}
+.generate-btn:active{transform:translateY(0);}
+.gen-icon{font-size:1.1rem;}
+
+/* CANVAS */
+.canvas-area{
+  background:var(--cream);display:flex;flex-direction:column;
+}
+.canvas-toolbar{
+  background:var(--white);border-bottom:1px solid var(--cream3);
+  padding:0.8rem 1.5rem;display:flex;align-items:center;gap:1rem;
+}
+.tb-label{font-size:0.8rem;color:var(--ink3);font-weight:400;}
+.tb-btn{
+  padding:0.4rem 1rem;border-radius:2rem;font-size:0.78rem;font-weight:500;
+  border:1.5px solid var(--cream3);background:transparent;color:var(--ink2);
+  cursor:pointer;font-family:var(--s);transition:all 0.2s;
+}
+.tb-btn:hover,.tb-btn.act{background:var(--ink);color:var(--white);border-color:var(--ink);}
+.tb-sep{width:1px;height:20px;background:var(--cream3);}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:0.7rem;}
+.room-name-display{
+  font-family:var(--r);font-size:1rem;color:var(--ink2);
+  font-weight:400;letter-spacing:0.3px;
+}
+
+/* Main room canvas */
+.room-canvas{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:2rem;position:relative;
+}
+.room-frame{
+  width:100%;max-width:700px;aspect-ratio:4/3;
+  background:var(--white);border-radius:20px;
+  box-shadow:0 8px 32px rgba(30,28,24,0.08);
+  position:relative;overflow:hidden;
+  border:1px solid var(--cream3);
+}
+.room-bg{
+  position:absolute;inset:0;
+  transition:background 0.6s ease;
+}
+/* 3D perspective room */
+.room-3d{
+  position:absolute;inset:0;
+  display:flex;align-items:flex-end;
+  justify-content:center;
+  perspective:800px;
+  padding-bottom:0;
+}
+.floor-3d{
+  position:absolute;bottom:0;left:0;right:0;
+  height:42%;
+  transform-origin:bottom center;
+  transition:background 0.6s;
+}
+.wall-back{
+  position:absolute;top:0;left:0;right:0;bottom:42%;
+  transition:background 0.6s;
+}
+.wall-left{
+  position:absolute;bottom:30%;left:0;width:12%;
+  height:60%;background:rgba(0,0,0,0.05);
+  transform-origin:left center;
+}
+.wall-right{
+  position:absolute;bottom:30%;right:0;width:12%;
+  height:60%;background:rgba(0,0,0,0.03);
+}
+/* Furniture pieces */
+.furn-container{
+  position:absolute;bottom:42%;left:0;right:0;
+  display:flex;justify-content:center;align-items:flex-end;
+  height:55%;
+}
+.big-sofa{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:260px;height:80px;border-radius:14px 14px 6px 6px;
+  transition:background 0.5s;
+}
+.big-sofa::before{
+  content:'';position:absolute;bottom:100%;left:12px;right:12px;
+  height:28px;border-radius:10px 10px 0 0;
+  background:rgba(0,0,0,0.08);
+}
+.big-sofa::after{
+  content:'';position:absolute;inset:6px;
+  border-radius:8px;background:rgba(255,255,255,0.12);
+}
+.sofa-cushion{
+  position:absolute;top:10px;
+  width:55px;height:36px;border-radius:6px;
+  background:rgba(255,255,255,0.2);
+  transition:background 0.4s;
+}
+.sc1{left:20px;}
+.sc2{left:82px;}
+.sc3{left:144px;}
+.sc-arm{
+  position:absolute;top:5px;width:18px;height:50px;
+  background:rgba(0,0,0,0.08);border-radius:4px;
+}
+.sc-arm.l{left:0;}
+.sc-arm.r{right:0;}
+
+.center-table{
+  position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);
+  width:120px;height:50px;border-radius:8px;
+  background:rgba(0,0,0,0.25);
+  transition:background 0.5s;
+}
+.center-table::before{
+  content:'';position:absolute;top:6px;left:6px;right:6px;bottom:6px;
+  border-radius:4px;background:rgba(255,255,255,0.1);
+}
+
+.plant-l{position:absolute;bottom:0;left:10%;}
+.plant-r{position:absolute;bottom:0;right:10%;}
+.plant-pot-big{width:26px;height:22px;background:var(--clay);border-radius:4px 4px 7px 7px;margin:0 auto;opacity:0.9;}
+.plant-stem-big{width:3px;height:40px;background:var(--sage);margin:0 auto;}
+.plant-leaf-big{width:36px;height:22px;background:var(--sage);border-radius:50% 50% 50% 0;margin:0 auto;transform:rotate(-10deg);}
+.plant-leaf-big2{width:28px;height:18px;background:var(--sage-d);border-radius:0 50% 50% 50%;transform:rotate(25deg);margin:0 auto;margin-top:-12px;}
+
+.floor-lamp{position:absolute;bottom:0;right:25%;display:flex;flex-direction:column;align-items:center;}
+.fl-shade{width:32px;height:22px;background:#d8cc9c;border-radius:3px 3px 8px 8px;clip-path:polygon(12% 0%,88% 0%,100% 100%,0% 100%);}
+.fl-pole{width:3px;height:55px;background:#9a8870;}
+.fl-base{width:20px;height:4px;background:#9a8870;border-radius:2px;}
+
+.wall-shelf{position:absolute;top:18%;right:16%;width:80px;height:8px;background:#9a8870;border-radius:2px;}
+.shelf-item1{position:absolute;top:-22px;left:5px;width:14px;height:22px;background:#c4a888;border-radius:2px 2px 0 0;}
+.shelf-item2{position:absolute;top:-28px;left:25px;width:10px;height:28px;background:#8898a8;border-radius:2px 2px 0 0;}
+.shelf-item3{position:absolute;top:-18px;left:42px;width:18px;height:18px;background:var(--clay);border-radius:50% 50% 0 0;opacity:0.8;}
+.shelf-bracket{position:absolute;top:8px;right:4px;width:3px;height:30px;background:#9a8870;}
+
+.wall-art{
+  position:absolute;top:10%;left:50%;transform:translateX(-50%);
+  width:80px;height:55px;border:4px solid #c8b898;
+  border-radius:4px;background:rgba(200,190,170,0.3);
+  display:flex;align-items:center;justify-content:center;
+}
+.art-inner{width:60px;height:35px;background:rgba(180,160,140,0.4);border-radius:2px;}
+
+.rug-big{
+  position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);
+  width:320px;height:30px;border-radius:8px;
+  background:rgba(160,130,100,0.3);
+}
+
+/* Info overlay */
+.room-info{
+  position:absolute;top:16px;left:16px;
+  background:rgba(253,250,245,0.9);backdrop-filter:blur(6px);
+  padding:0.7rem 1rem;border-radius:12px;
+  font-size:0.78rem;line-height:1.6;
+  border:1px solid rgba(200,190,170,0.3);
+  min-width:150px;
+}
+.room-info strong{font-weight:600;color:var(--ink);display:block;margin-bottom:2px;font-family:var(--r);font-size:0.95rem;}
+.room-info-row{display:flex;justify-content:space-between;gap:1rem;color:var(--ink3);}
+
+.eco-badge{
+  position:absolute;top:16px;right:16px;
+  padding:0.4rem 0.9rem;border-radius:2rem;
+  font-size:0.72rem;font-weight:600;color:var(--white);
+  background:var(--sage);
+}
+
+/* Furniture list */
+.furn-list{
+  background:var(--white);border-top:1px solid var(--cream3);
+  padding:1.2rem 1.5rem;
+}
+.furn-list-title{
+  font-family:var(--r);font-size:0.9rem;font-weight:600;
+  color:var(--ink2);margin-bottom:0.8rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.furn-list-title span{font-family:var(--s);font-size:0.78rem;font-weight:400;color:var(--clay);}
+.furn-items{display:flex;gap:0.7rem;flex-wrap:wrap;}
+.furn-item{
+  background:var(--cream);border-radius:10px;padding:0.5rem 0.9rem;
+  font-size:0.78rem;display:flex;align-items:center;gap:6px;
+  border:1px solid var(--cream3);cursor:pointer;transition:all 0.2s;
+}
+.furn-item:hover{border-color:var(--clay);background:rgba(184,115,85,0.06);}
+.furn-item.hi{border-color:var(--clay);background:rgba(184,115,85,0.1);}
+.fi-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.fi-price{margin-left:auto;font-weight:500;color:var(--clay);}
+
+/* Loading state */
+.loading-overlay{
+  position:absolute;inset:0;background:rgba(247,243,236,0.92);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:50;border-radius:20px;opacity:0;pointer-events:none;transition:opacity 0.3s;
+}
+.loading-overlay.show{opacity:1;pointer-events:all;}
+.loader{
+  width:48px;height:48px;border:3px solid var(--cream3);
+  border-top-color:var(--clay);border-radius:50%;
+  animation:spin 0.8s linear infinite;margin-bottom:1rem;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.load-text{font-family:var(--r);font-size:1.1rem;color:var(--ink2);}
+.load-sub{font-size:0.8rem;color:var(--ink3);margin-top:4px;font-weight:300;}
+
+/* Empty state */
+.empty-state{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:2rem;
+}
+.empty-icon{font-size:3rem;margin-bottom:1rem;opacity:0.3;}
+.empty-state h3{font-family:var(--r);font-size:1.4rem;color:var(--ink2);margin-bottom:0.5rem;}
+.empty-state p{font-size:0.85rem;color:var(--ink3);font-weight:300;max-width:260px;}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--ink);color:var(--white);padding:0.8rem 1.5rem;
+  border-radius:2rem;font-size:0.85rem;font-weight:500;z-index:999;
+  transition:transform 0.3s ease;pointer-events:none;white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* AR modal */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(30,28,24,0.6);z-index:300;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 0.3s;
+}
+.modal-bg.open{opacity:1;pointer-events:all;}
+.modal{
+  background:var(--white);border-radius:24px;padding:2rem;
+  max-width:480px;width:90%;position:relative;
+  transform:translateY(20px);transition:transform 0.3s;
+}
+.modal-bg.open .modal{transform:translateY(0);}
+.modal-close{
+  position:absolute;top:1rem;right:1rem;background:var(--cream);
+  border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;
+  font-size:1rem;display:flex;align-items:center;justify-content:center;
+}
+.modal h3{font-family:var(--r);font-size:1.5rem;margin-bottom:0.5rem;}
+.modal p{font-size:0.85rem;color:var(--ink3);margin-bottom:1.5rem;font-weight:300;line-height:1.6;}
+.ar-placeholder{
+  background:var(--cream);border-radius:16px;height:200px;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:0.5rem;margin-bottom:1.5rem;
+  border:2px dashed var(--cream3);
+}
+.ar-placeholder .ar-icon{font-size:2.5rem;opacity:0.4;}
+.ar-placeholder p{font-size:0.8rem;color:var(--ink3);font-weight:300;}
+.modal-btn{
+  width:100%;background:var(--ink);color:var(--white);border:none;
+  padding:0.85rem;border-radius:12px;font-size:0.9rem;font-weight:500;
+  font-family:var(--s);cursor:pointer;transition:background 0.2s;
+}
+.modal-btn:hover{background:var(--clay);}
+
+/* Cart panel */
+.cart-panel{
+  position:fixed;right:0;top:64px;bottom:0;width:320px;
+  background:var(--white);border-left:1px solid var(--cream3);
+  transform:translateX(100%);transition:transform 0.3s;z-index:150;
+  display:flex;flex-direction:column;
+}
+.cart-panel.open{transform:translateX(0);}
+.cart-header{
+  padding:1.2rem 1.5rem;border-bottom:1px solid var(--cream3);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.cart-header h4{font-family:var(--r);font-size:1.1rem;}
+.cart-close-btn{background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--ink3);}
+.cart-items{flex:1;overflow-y:auto;padding:1rem;}
+.cart-item{
+  display:flex;align-items:center;gap:0.8rem;padding:0.8rem 0;
+  border-bottom:1px solid var(--cream2);
+}
+.ci-dot{width:36px;height:36px;border-radius:8px;flex-shrink:0;}
+.ci-info h6{font-size:0.85rem;font-weight:500;}
+.ci-info p{font-size:0.75rem;color:var(--ink3);font-weight:300;}
+.ci-price{margin-left:auto;font-size:0.85rem;font-weight:500;color:var(--clay);flex-shrink:0;}
+.cart-footer{
+  padding:1.2rem 1.5rem;border-top:1px solid var(--cream3);
+}
+.cart-total{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+.cart-total span{font-size:0.85rem;color:var(--ink3);}
+.cart-total strong{font-family:var(--r);font-size:1.3rem;}
+.checkout-btn{
+  width:100%;background:var(--clay);color:var(--white);border:none;
+  padding:0.9rem;border-radius:12px;font-size:0.9rem;font-weight:600;
+  font-family:var(--s);cursor:pointer;transition:background 0.2s;
+}
+.checkout-btn:hover{background:var(--clay-d);}
+.cart-badge{
+  background:var(--clay);color:var(--white);border-radius:50%;
+  width:18px;height:18px;font-size:0.65rem;font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center;
+  margin-left:4px;vertical-align:middle;
+}
+
+@media(max-width:860px){
+  .designer{grid-template-columns:1fr;}
+  .sidebar{max-height:none;}
+  .home-hero{grid-template-columns:1fr;}
+  .hero-r{display:none;}
+  .hero-l{padding:3rem 2rem;}
+  .hero-l h1{font-size:3rem;}
+  nav{padding:1rem 1.5rem;}
+  .nav-tabs{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="showPage('home')">Nest<b>Forge</b></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('home',this)">Home</button>
+    <button class="nav-tab" onclick="showPage('designer',this)">Design Tool</button>
+  </div>
+  <div class="nav-right">
+    <span style="font-size:0.82rem;color:var(--ink3);cursor:pointer;" onclick="toggleCart()">
+      Cart <span class="cart-badge" id="cart-count">0</span>
+    </span>
+    <button class="nav-btn" onclick="showPage('designer');document.querySelectorAll('.nav-tab')[1].click()">Start Designing</button>
+  </div>
+</nav>
+
+<!-- ===== HOME PAGE ===== -->
+<div class="page active" id="page-home">
+  <section class="home-hero">
+    <div class="hero-l">
+      <div class="badge"><div class="dot"></div>AI-Powered Interior Design</div>
+      <h1>Your space,<br><i>designed</i><br>in minutes.</h1>
+      <p>Tell NestForge your room size, style, and budget. Our AI designs it, shows it in 3D, and lets you buy every piece — all in one place.</p>
+      <div class="hero-btns">
+        <button class="btn-main" onclick="showPage('designer');document.querySelectorAll('.nav-tab')[1].classList.add('active');document.querySelectorAll('.nav-tab')[0].classList.remove('active');">Design My Room</button>
+        <button class="btn-out" onclick="showPage('designer');document.querySelectorAll('.nav-tab')[1].classList.add('active');document.querySelectorAll('.nav-tab')[0].classList.remove('active');">See How It Works →</button>
+      </div>
+      <div class="hero-nums">
+        <div class="hnum"><span>2 min</span><small>To your first design</small></div>
+        <div class="hnum"><span>50k+</span><small>Furniture pieces</small></div>
+        <div class="hnum"><span>Free</span><small>To start, always</small></div>
+      </div>
+    </div>
+    <div class="hero-r">
+      <div class="hero-r-deco"></div>
+      <div class="hero-r-deco2"></div>
+      <div class="preview-window">
+        <div class="pw-bar">
+          <div class="pw-dot r"></div><div class="pw-dot y"></div><div class="pw-dot g"></div>
+          <div class="pw-title">nestforge.co — room designer</div>
+        </div>
+        <div class="pw-body">
+          <div class="pw-room">
+            <div class="scene">
+              <div class="s-wall"></div>
+              <div class="s-floor"></div>
+              <div class="s-rug"></div>
+              <div class="s-sofa"></div>
+              <div class="s-cushion"></div><div class="s-cushion2"></div>
+              <div class="s-table"></div>
+              <div class="s-lamp"><div class="s-lampshade"></div><div class="s-lampbase"></div><div class="s-lampfoot"></div></div>
+              <div class="s-plant"><div class="s-leaf2"></div><div class="s-leaf"></div><div class="s-stem"></div><div class="s-pot"></div></div>
+              <div class="s-shelf"><div class="s-obj1"></div><div class="s-obj2"></div></div>
+            </div>
+            <div class="scene-label">Japandi Minimal</div>
+            <div class="scene-eco">♻ High</div>
+          </div>
+          <div class="pw-chips">
+            <div class="pw-chip on">Japandi</div>
+            <div class="pw-chip">Nordic</div>
+            <div class="pw-chip">Boho</div>
+            <div class="pw-chip">Industrial</div>
+          </div>
+          <button class="pw-action" onclick="showPage('designer');document.querySelectorAll('.nav-tab')[1].classList.add('active');document.querySelectorAll('.nav-tab')[0].classList.remove('active');">Generate My Room Design ✦</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features strip -->
+  <div style="background:var(--white);padding:3rem 5rem;border-top:1px solid var(--cream3);">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;max-width:1100px;margin:0 auto;">
+      <div style="text-align:center;">
+        <div style="font-size:1.8rem;margin-bottom:0.6rem;">📐</div>
+        <div style="font-weight:500;font-size:0.9rem;margin-bottom:0.3rem;">Room Mapping</div>
+        <div style="font-size:0.8rem;color:var(--ink3);font-weight:300;">Enter dimensions & scan your space</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:1.8rem;margin-bottom:0.6rem;">🤖</div>
+        <div style="font-weight:500;font-size:0.9rem;margin-bottom:0.3rem;">AI Design Engine</div>
+        <div style="font-size:0.8rem;color:var(--ink3);font-weight:300;">Style-matched furniture layouts</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:1.8rem;margin-bottom:0.6rem;">🪴</div>
+        <div style="font-weight:500;font-size:0.9rem;margin-bottom:0.3rem;">Eco Scoring</div>
+        <div style="font-size:0.8rem;color:var(--ink3);font-weight:300;">Shop sustainably by default</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:1.8rem;margin-bottom:0.6rem;">🛒</div>
+        <div style="font-weight:500;font-size:0.9rem;margin-bottom:0.3rem;">One-Click Shop</div>
+        <div style="font-size:0.8rem;color:var(--ink3);font-weight:300;">Buy the whole room instantly</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DESIGNER PAGE ===== -->
+<div class="page" id="page-designer">
+  <div class="designer">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <!-- Step 1: Room Info -->
+      <div class="sb-section">
+        <div class="sb-title"><div class="sb-step">1</div> Your Room</div>
+        <div class="sb-row">
+          <div>
+            <div class="sb-label">Width (ft)</div>
+            <input class="sb-input" type="number" id="room-w" value="14" min="8" max="40" placeholder="14">
+          </div>
+          <div>
+            <div class="sb-label">Length (ft)</div>
+            <input class="sb-input" type="number" id="room-l" value="16" min="8" max="50" placeholder="16">
+          </div>
+        </div>
+        <div class="sb-full">
+          <div class="sb-label">Room Type</div>
+          <select class="sb-input" id="room-type">
+            <option>Living Room</option>
+            <option>Bedroom</option>
+            <option>Home Office</option>
+            <option>Dining Room</option>
+            <option>Studio</option>
+          </select>
+        </div>
+        <div class="sb-full">
+          <div class="sb-label">Room Name (optional)</div>
+          <input class="sb-input" type="text" id="room-name" placeholder="e.g. My Brooklyn Apartment">
+        </div>
+      </div>
+
+      <div class="sb-divider"></div>
+
+      <!-- Step 2: Style -->
+      <div class="sb-section">
+        <div class="sb-title"><div class="sb-step">2</div> Style</div>
+        <div class="sb-label">Aesthetic</div>
+        <div class="chip-group" id="style-chips">
+          <div class="chip sel" data-val="Japandi">Japandi</div>
+          <div class="chip" data-val="Scandinavian">Scandinavian</div>
+          <div class="chip" data-val="Bohemian">Bohemian</div>
+          <div class="chip" data-val="Industrial">Industrial</div>
+          <div class="chip" data-val="Mid-Century">Mid-Century</div>
+          <div class="chip" data-val="Coastal">Coastal</div>
+          <div class="chip" data-val="Maximalist">Maximalist</div>
+          <div class="chip" data-val="Minimalist">Minimalist</div>
+        </div>
+        <div class="sb-label">Color Palette</div>
+        <div class="color-swatches" id="palette-swatches">
+          <div class="swatch sel" data-pal="warm" style="background:#c8b49a;" title="Warm Neutrals"></div>
+          <div class="swatch" data-pal="cool" style="background:#9ab4c8;" title="Cool Blues"></div>
+          <div class="swatch" data-pal="earthy" style="background:#8a7a5a;" title="Earthy Tones"></div>
+          <div class="swatch" data-pal="sage" style="background:#7a9e7e;" title="Sage Green"></div>
+          <div class="swatch" data-pal="mono" style="background:#6a6860;" title="Monochrome"></div>
+          <div class="swatch" data-pal="clay" style="background:#b87355;" title="Clay & Rust"></div>
+          <div class="swatch" data-pal="navy" style="background:#3a4a6a;" title="Deep Navy"></div>
+          <div class="swatch" data-pal="blush" style="background:#d4a0a0;" title="Blush & Rose"></div>
+        </div>
+      </div>
+
+      <div class="sb-divider"></div>
+
+      <!-- Step 3: Budget -->
+      <div class="sb-section">
+        <div class="sb-title"><div class="sb-step">3</div> Budget & Options</div>
+        <div class="sb-label">Budget: <strong id="budget-display">$2,500</strong></div>
+        <input class="sb-range" type="range" id="budget-range" min="500" max="10000" step="100" value="2500">
+        <div class="sb-range-labels"><span>$500</span><span>$10,000</span></div>
+        <div style="margin-top:1rem;">
+          <div class="sb-label">Sustainability Priority</div>
+          <div class="chip-group" id="eco-chips">
+            <div class="chip" data-val="Any">Any</div>
+            <div class="chip sel" data-val="Medium">Medium ♻</div>
+            <div class="chip" data-val="High">High ♻♻</div>
+          </div>
+        </div>
+        <div style="margin-top:0.5rem;">
+          <div class="sb-label">Must-Have Furniture</div>
+          <div class="chip-group" id="must-chips">
+            <div class="chip sel" data-val="Sofa">Sofa</div>
+            <div class="chip sel" data-val="Coffee Table">Coffee Table</div>
+            <div class="chip" data-val="Armchair">Armchair</div>
+            <div class="chip sel" data-val="Plants">Plants</div>
+            <div class="chip" data-val="Bookshelf">Bookshelf</div>
+            <div class="chip sel" data-val="Floor Lamp">Floor Lamp</div>
+            <div class="chip" data-val="Rug">Rug</div>
+            <div class="chip" data-val="Wall Art">Wall Art</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sb-divider"></div>
+
+      <button class="generate-btn" onclick="generateDesign()">
+        <span class="gen-icon">✦</span> Generate Design
+      </button>
+      <div style="text-align:center;font-size:0.72rem;color:var(--ink3);margin-top:0.6rem;font-weight:300;">Takes ~2 seconds · Free to generate</div>
+    </div>
+
+    <!-- CANVAS AREA -->
+    <div class="canvas-area">
+      <div class="canvas-toolbar">
+        <span class="tb-label">View:</span>
+        <button class="tb-btn act" id="view-3d" onclick="setView('3d',this)">3D Room</button>
+        <button class="tb-btn" id="view-2d" onclick="setView('2d',this)">Floor Plan</button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" onclick="showARModal()">AR Preview</button>
+        <div class="tb-right">
+          <span class="room-name-display" id="display-name">Your Room</span>
+          <button class="tb-btn" onclick="addAllToCart()" id="shop-btn" style="display:none;background:var(--clay);color:var(--white);border-color:var(--clay);">Shop This Room →</button>
+        </div>
+      </div>
+
+      <div class="room-canvas">
+        <!-- Empty state -->
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">🛋️</div>
+          <h3>Your canvas is empty</h3>
+          <p>Fill in your room details on the left and click <em>Generate Design</em> to see your room come to life.</p>
+        </div>
+
+        <!-- Room frame (hidden initially) -->
+        <div class="room-frame" id="room-frame" style="display:none;">
+          <div class="room-bg" id="room-bg"></div>
+          <div class="wall-back" id="wall-back"></div>
+          <div class="floor-3d" id="floor-3d"></div>
+
+          <div class="furn-container" id="furn-container">
+            <div class="rug-big" id="rug-el" style="display:none;"></div>
+            <div class="big-sofa" id="sofa-el">
+              <div class="sc-arm l"></div>
+              <div class="sofa-cushion sc1"></div>
+              <div class="sofa-cushion sc2"></div>
+              <div class="sofa-cushion sc3"></div>
+              <div class="sc-arm r"></div>
+            </div>
+            <div class="center-table" id="table-el"></div>
+            <div class="plant-l" id="plant-l-el">
+              <div class="plant-leaf-big2"></div>
+              <div class="plant-leaf-big"></div>
+              <div class="plant-stem-big"></div>
+              <div class="plant-pot-big"></div>
+            </div>
+            <div class="plant-r" id="plant-r-el">
+              <div class="plant-leaf-big2"></div>
+              <div class="plant-leaf-big"></div>
+              <div class="plant-stem-big"></div>
+              <div class="plant-pot-big"></div>
+            </div>
+            <div class="floor-lamp" id="lamp-el" style="display:none;">
+              <div class="fl-shade"></div>
+              <div class="fl-pole"></div>
+              <div class="fl-base"></div>
+            </div>
+          </div>
+
+          <div class="wall-shelf" id="shelf-el" style="display:none;">
+            <div class="shelf-item1"></div>
+            <div class="shelf-item2"></div>
+            <div class="shelf-item3"></div>
+            <div class="shelf-bracket"></div>
+          </div>
+          <div class="wall-art" id="art-el" style="display:none;"><div class="art-inner"></div></div>
+
+          <div class="room-info" id="room-info-overlay"></div>
+          <div class="eco-badge" id="eco-badge"></div>
+
+          <div class="loading-overlay" id="loading-overlay">
+            <div class="loader"></div>
+            <div class="load-text">Designing your room...</div>
+            <div class="load-sub" id="load-sub-text">Selecting furniture</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Furniture list -->
+      <div class="furn-list" id="furn-list" style="display:none;">
+        <div class="furn-list-title">
+          Room Furniture <span id="room-total">Total: $0</span>
+        </div>
+        <div class="furn-items" id="furn-items-container"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AR Modal -->
+<div class="modal-bg" id="ar-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeARModal()">✕</button>
+    <h3>AR Room Preview</h3>
+    <p>Point your phone camera at any flat surface to place your designed room in real space. Walk around it, check dimensions, feel the scale.</p>
+    <div class="ar-placeholder">
+      <div class="ar-icon">📱</div>
+      <p>AR available on mobile devices</p>
+      <p style="font-size:0.72rem;color:var(--ink3);">Open nestforge.co on your phone to launch AR</p>
+    </div>
+    <button class="modal-btn" onclick="closeARModal()">Got it</button>
+  </div>
+</div>
+
+<!-- Cart Panel -->
+<div class="cart-panel" id="cart-panel">
+  <div class="cart-header">
+    <h4>Your Cart</h4>
+    <button class="cart-close-btn" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items-list">
+    <div style="text-align:center;padding:2rem;color:var(--ink3);font-size:0.85rem;font-weight:300;">Your cart is empty.<br>Design a room and click "Shop This Room".</div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total</span>
+      <strong id="cart-total-display">$0</strong>
+    </div>
+    <button class="checkout-btn" onclick="showToast('Checkout coming soon! 🚀')">Checkout →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- State ----
+let currentDesign = null;
+let cartItems = [];
+let currentView = '3d';
+
+// ---- Palette definitions ----
+const palettes = {
+  warm:  { wall:'#e8e0d4', floor:'#c4a888', sofa:'#c8b49a', table:'rgba(120,90,60,0.6)', cushion:'rgba(255,255,255,0.25)', bg:'#f0ebe0' },
+  cool:  { wall:'#d4dce8', floor:'#a8b4c8', sofa:'#94aac4', table:'rgba(60,80,120,0.5)', cushion:'rgba(255,255,255,0.3)', bg:'#e8eef5' },
+  earthy:{ wall:'#ddd4c4', floor:'#b0987a', sofa:'#9a8a6a', table:'rgba(80,65,45,0.6)', cushion:'rgba(255,245,230,0.25)', bg:'#ede5d8' },
+  sage:  { wall:'#d4e0d4', floor:'#a8b898', sofa:'#8aaa8e', table:'rgba(60,90,65,0.5)', cushion:'rgba(240,255,240,0.25)', bg:'#e4eee4' },
+  mono:  { wall:'#d8d8d4', floor:'#a8a8a4', sofa:'#888884', table:'rgba(50,50,50,0.55)', cushion:'rgba(255,255,255,0.2)', bg:'#e8e8e4' },
+  clay:  { wall:'#e8d8cc', floor:'#c09070', sofa:'#b87355', table:'rgba(100,60,40,0.55)', cushion:'rgba(255,230,210,0.3)', bg:'#f0e0d4' },
+  navy:  { wall:'#d0d8e8', floor:'#7888a8', sofa:'#3a4a6a', table:'rgba(30,40,80,0.6)', cushion:'rgba(200,220,255,0.25)', bg:'#dce4f0' },
+  blush: { wall:'#f0e0e0', floor:'#c8a0a0', sofa:'#d4a0a0', table:'rgba(100,60,60,0.45)', cushion:'rgba(255,240,240,0.3)', bg:'#f8ece8' },
+};
+
+// ---- Furniture catalog ----
+const furnitureCatalog = {
+  'Sofa': [
+    {name:'Haven L-Sofa',price:890,color:'sage',eco:'High',brands:['West Elm','Crate & Barrel']},
+    {name:'Oasis Sectional',price:1150,color:'clay',eco:'Medium',brands:['Article','CB2']},
+    {name:'Lena 3-Seater',price:620,color:'mono',eco:'High',brands:['IKEA','Wayfair']},
+  ],
+  'Coffee Table': [
+    {name:'Acorn Round Table',price:220,color:'earthy',eco:'High',brands:['West Elm']},
+    {name:'Teak Slab Table',price:380,color:'earthy',eco:'High',brands:['Pottery Barn']},
+    {name:'Marble Top Table',price:460,color:'mono',eco:'Medium',brands:['CB2']},
+  ],
+  'Plants': [
+    {name:'Fiddle Leaf Fig',price:85,color:'sage',eco:'High',brands:['The Sill']},
+    {name:'Monstera + Pot',price:65,color:'sage',eco:'High',brands:['Bloomscape']},
+  ],
+  'Floor Lamp': [
+    {name:'Arc Brass Lamp',price:175,color:'gold',eco:'Medium',brands:['CB2']},
+    {name:'Rattan Tripod Lamp',price:140,color:'earthy',eco:'High',brands:['Urban Outfitters']},
+  ],
+  'Armchair': [
+    {name:'Boucle Accent Chair',price:420,color:'warm',eco:'Medium',brands:['Anthropologie']},
+    {name:'Leather Club Chair',price:680,color:'earthy',eco:'Medium',brands:['Restoration Hardware']},
+  ],
+  'Bookshelf': [
+    {name:'Modular Wall Unit',price:340,color:'mono',eco:'High',brands:['IKEA']},
+    {name:'Ladder Shelf',price:210,color:'earthy',eco:'High',brands:['Target']},
+  ],
+  'Rug': [
+    {name:'Jute Area Rug 8x10',price:290,color:'warm',eco:'High',brands:['Rugs USA']},
+    {name:'Wool Flatweave Rug',price:440,color:'earthy',eco:'High',brands:['Loloi']},
+  ],
+  'Wall Art': [
+    {name:'Abstract Print Set',price:120,color:'warm',eco:'Medium',brands:['Society6']},
+    {name:'Botanical Gallery',price:95,color:'sage',eco:'High',brands:['Minted']},
+  ],
+};
+
+const colorDots = {
+  sage:'#7a9e7e', clay:'#b87355', warm:'#c8b49a', cool:'#9ab4c8',
+  earthy:'#8a7a5a', mono:'#888884', gold:'#c9a84c', navy:'#3a4a6a', blush:'#d4a0a0'
+};
+
+const loadSteps = ['Mapping your room…','Selecting furniture…','Matching colors…','Calculating budget…','Finalizing your design ✦'];
+
+// ---- Page switching ----
+function showPage(page, tabEl) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  if(tabEl) tabEl.classList.add('active');
+  else {
+    const idx = page==='home'?0:1;
+    document.querySelectorAll('.nav-tab')[idx]?.classList.add('active');
+  }
+}
+
+// ---- Chip toggles ----
+document.querySelectorAll('#style-chips .chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    document.querySelectorAll('#style-chips .chip').forEach(x=>x.classList.remove('sel'));
+    c.classList.add('sel');
+  });
+});
+document.querySelectorAll('#eco-chips .chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    document.querySelectorAll('#eco-chips .chip').forEach(x=>x.classList.remove('sel'));
+    c.classList.add('sel');
+  });
+});
+document.querySelectorAll('#must-chips .chip').forEach(c=>{
+  c.addEventListener('click',()=>c.classList.toggle('sel'));
+});
+document.querySelectorAll('.color-swatches .swatch').forEach(s=>{
+  s.addEventListener('click',()=>{
+    document.querySelectorAll('.color-swatches .swatch').forEach(x=>x.classList.remove('sel'));
+    s.classList.add('sel');
+  });
+});
+document.querySelectorAll('.pw-chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    document.querySelectorAll('.pw-chip').forEach(x=>x.classList.remove('on'));
+    c.classList.add('on');
+  });
+});
+
+// ---- Budget slider ----
+document.getElementById('budget-range').addEventListener('input',function(){
+  const v = parseInt(this.value);
+  document.getElementById('budget-display').textContent = '$'+v.toLocaleString();
+});
+
+// ---- Generate ----
+function generateDesign() {
+  const w = parseInt(document.getElementById('room-w').value)||14;
+  const l = parseInt(document.getElementById('room-l').value)||16;
+  const type = document.getElementById('room-type').value;
+  const name = document.getElementById('room-name').value || type;
+  const budget = parseInt(document.getElementById('budget-range').value)||2500;
+  const style = document.querySelector('#style-chips .chip.sel')?.dataset.val || 'Japandi';
+  const pal = document.querySelector('.color-swatches .swatch.sel')?.dataset.pal || 'warm';
+  const eco = document.querySelector('#eco-chips .chip.sel')?.dataset.val || 'Medium';
+  const must = [...document.querySelectorAll('#must-chips .chip.sel')].map(c=>c.dataset.val);
+
+  document.getElementById('empty-state').style.display='none';
+  const frame = document.getElementById('room-frame');
+  frame.style.display='block';
+  const loader = document.getElementById('loading-overlay');
+  loader.classList.add('show');
+  document.getElementById('furn-list').style.display='none';
+  document.getElementById('shop-btn').style.display='none';
+
+  let step=0;
+  const stepInterval = setInterval(()=>{
+    document.getElementById('load-sub-text').textContent = loadSteps[step]||loadSteps[loadSteps.length-1];
+    step++;
+  },400);
+
+  setTimeout(()=>{
+    clearInterval(stepInterval);
+    loader.classList.remove('show');
+    applyDesign({w,l,type,name,budget,style,pal,eco,must});
+  }, 2200);
+}
+
+function applyDesign({w,l,type,name,budget,style,pal,eco,must}) {
+  const p = palettes[pal] || palettes.warm;
+
+  document.getElementById('room-bg').style.background = p.bg;
+  document.getElementById('wall-back').style.background = p.wall;
+  document.getElementById('floor-3d').style.background = p.floor;
+
+  const sofa = document.getElementById('sofa-el');
+  sofa.style.background = p.sofa;
+  sofa.querySelectorAll('.sofa-cushion').forEach(c=>{ c.style.background = p.cushion; });
+  document.getElementById('table-el').style.background = p.table;
+
+  const showPlants = must.includes('Plants');
+  document.getElementById('plant-l-el').style.display = showPlants ? 'block':'none';
+  document.getElementById('plant-r-el').style.display = showPlants ? 'block':'none';
+  document.getElementById('lamp-el').style.display = must.includes('Floor Lamp') ? 'flex':'none';
+  document.getElementById('shelf-el').style.display = must.includes('Bookshelf') ? 'block':'none';
+  document.getElementById('art-el').style.display = must.includes('Wall Art') ? 'flex':'none';
+  document.getElementById('rug-el').style.display = must.includes('Rug') ? 'block':'none';
+  if(document.getElementById('rug-el').style.display==='block') {
+    document.getElementById('rug-el').style.background = p.sofa.replace(')',',0.3)').replace('rgb','rgba');
+  }
+
+  const nameDisplay = document.getElementById('display-name');
+  nameDisplay.textContent = name || type;
+  document.getElementById('room-info-overlay').innerHTML = `<strong>${name||type}</strong><div class="room-info-row"><span>${w}×${l} ft</span><span>${style}</span></div><div class="room-info-row"><span>Budget:</span><span>$${budget.toLocaleString()}</span></div>`;
+  document.getElementById('eco-badge').textContent = '♻ '+eco;
+
+  // Build furniture list
+  let items = [];
+  let total = 0;
+  must.forEach(m=>{
+    const cat = furnitureCatalog[m];
+    if(cat){
+      // pick one based on palette/eco
+      let pick = cat[0];
+      if(eco==='High') pick = cat.find(x=>x.eco==='High')||cat[0];
+      const price = Math.round(pick.price * (budget/2500) * (0.85 + Math.random()*0.3));
+      items.push({name:pick.name, cat:m, price, color:colorDots[pick.color]||'#888', eco:pick.eco});
+      total += price;
+    }
+  });
+
+  // Store design
+  currentDesign = {name, style, pal, eco, must, items, total};
+
+  // Render furniture list
+  const container = document.getElementById('furn-items-container');
+  container.innerHTML = '';
+  items.forEach(item=>{
+    const el = document.createElement('div');
+    el.className = 'furn-item';
+    el.innerHTML = `<div class="fi-dot" style="background:${item.color}"></div><span>${item.name}</span><span class="fi-price">$${item.price.toLocaleString()}</span>`;
+    el.addEventListener('click',()=>el.classList.toggle('hi'));
+    container.appendChild(el);
+  });
+  document.getElementById('room-total').textContent = 'Total: $'+total.toLocaleString();
+  document.getElementById('furn-list').style.display='block';
+  document.getElementById('shop-btn').style.display='flex';
+
+  showToast('Room designed! ✦ '+style+' style applied');
+}
+
+// ---- View toggle ----
+function setView(v, btn) {
+  currentView = v;
+  document.querySelectorAll('.canvas-toolbar .tb-btn').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');
+  const fc = document.getElementById('furn-container');
+  const wb = document.getElementById('wall-back');
+  const fd = document.getElementById('floor-3d');
+  if(v==='2d') {
+    wb.style.opacity='0';
+    fd.style.background='#d0c8b8';
+    fd.style.height='100%';
+    fd.style.bottom='0';
+    document.getElementById('room-bg').style.background='#e8e4dc';
+    fc.style.transform='scale(0.7) translateY(15%)';
+    fc.style.opacity='0.9';
+  } else {
+    wb.style.opacity='1';
+    fd.style.height='42%';
+    fc.style.transform='';
+    fc.style.opacity='1';
+    if(currentDesign) applyDesign(currentDesign);
+    else { document.getElementById('room-bg').style.background=''; }
+  }
+}
+
+// ---- AR Modal ----
+function showARModal() {
+  document.getElementById('ar-modal').classList.add('open');
+}
+function closeARModal() {
+  document.getElementById('ar-modal').classList.remove('open');
+}
+document.getElementById('ar-modal').addEventListener('click',function(e){
+  if(e.target===this) closeARModal();
+});
+
+// ---- Cart ----
+function toggleCart() {
+  document.getElementById('cart-panel').classList.toggle('open');
+}
+function addAllToCart() {
+  if(!currentDesign) return;
+  currentDesign.items.forEach(item=>{
+    if(!cartItems.find(c=>c.name===item.name)) cartItems.push(item);
+  });
+  renderCart();
+  document.getElementById('cart-panel').classList.add('open');
+  showToast('Added '+currentDesign.items.length+' items to cart! 🛒');
+}
+function renderCart() {
+  const list = document.getElementById('cart-items-list');
+  if(cartItems.length===0) {
+    list.innerHTML='<div style="text-align:center;padding:2rem;color:var(--ink3);font-size:0.85rem;font-weight:300;">Your cart is empty.<br>Design a room and click "Shop This Room".</div>';
+    document.getElementById('cart-total-display').textContent='$0';
+    document.getElementById('cart-count').textContent='0';
+    return;
+  }
+  let total=0;
+  list.innerHTML = cartItems.map(item=>{
+    total+=item.price;
+    return `<div class="cart-item">
+      <div class="ci-dot" style="background:${item.color};border-radius:8px;"></div>
+      <div class="ci-info"><h6>${item.name}</h6><p>${item.cat}</p></div>
+      <div class="ci-price">$${item.price.toLocaleString()}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('cart-total-display').textContent='$'+total.toLocaleString();
+  document.getElementById('cart-count').textContent=cartItems.length;
+}
+
+// ---- Toast ----
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ---- Keyboard ----
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ closeARModal(); document.getElementById('cart-panel').classList.remove('open'); }
+});
+</script>
+</body>
+</html>
